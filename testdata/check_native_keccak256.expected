@@ -1,0 +1,55 @@
+Module Handles: [
+    0x0.<SELF>,
+    0x0.Hash,
+]
+Struct Handles: [
+]
+Function Handles: [
+    0x0.<SELF>.main(): (),
+    0x0.Hash.keccak256(bytearray): (bytearray),
+]
+Struct Definitions: [
+]
+Field Definitions: [
+]
+Type Signatures: [
+]
+Function Signatures: [
+    (): (),
+    (bytearray): (bytearray),
+]
+Local Signatures: [
+    bytearray, bytearray, bytearray,
+]
+Strings: [
+    <SELF>,
+    Hash,
+    main,
+    keccak256,
+]
+ByteArrays: [
+    616263,
+    4E03657AEA45A94FC7D47BA826C8D667C0D1E6E33A64A036EC44F58FA12D6C45,
+]
+Addresses: [
+    0x0,
+]
+Function Definitions: [
+]
+public 0x0.<SELF>.main(): ()
+    max_stack_size: 4
+    locals: bytearray, bytearray, bytearray
+    LD_BYTEARRAY IdxByteArray(0)       [0,1]
+    ST_LOC IdxLocal(0)                 [1,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    CALL IdxFuncHandle(1)              [1,1]
+    ST_LOC IdxLocal(1)                 [1,0]
+    LD_BYTEARRAY IdxByteArray(1)       [0,1]
+    ST_LOC IdxLocal(2)                 [1,0]
+    LD_CONST ImmUint64(42)             [0,1]
+    MOVE_LOC IdxLocal(1)               [1,2]
+    MOVE_LOC IdxLocal(2)               [2,3]
+    EQ                                 [3,2]
+    ASSERT                             [2,0]
+    RET                                [0,0]
+

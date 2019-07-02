@@ -1,0 +1,46 @@
+CompiledProgram: {
+Modules: [
+],
+Script: CompiledScript: {
+Main:
+	public 0x0.<SELF>.main(): ()
+		locals(0): Integer,
+		LdConst(0)
+		StLoc(0)
+		LdTrue
+		BrFalse(14)
+		CopyLoc(0)
+		LdConst(5)
+		Ge
+		BrFalse(9)
+		Branch(14)
+		MoveLoc(0)
+		LdConst(1)
+		Add
+		StLoc(0)
+		Branch(2)
+		LdConst(42)
+		MoveLoc(0)
+		LdConst(5)
+		Eq
+		Assert
+		Ret
+Struct Handles: []
+Module Handles: [
+	0x0.<SELF>,]
+Function Handles: [
+	0x0.<SELF>.main(): (),]
+Type Signatures: []
+Function Signatures: [
+	(): (),]
+Locals Signatures: [
+	Integer,]
+Strings: [
+	<SELF>,
+	main,]
+ByteArrays: []
+Addresses: [
+	0x0,]
+}
+
+}

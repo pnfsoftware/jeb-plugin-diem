@@ -1,0 +1,203 @@
+Module Handles: [
+    0x0.LibraCoin,
+]
+Struct Handles: [
+    resource T@0x0.LibraCoin,
+    resource MintCapability@0x0.LibraCoin,
+]
+Function Handles: [
+    0x0.LibraCoin.borrow_sender_mint_capability(): (& struct resource MintCapability@0x0.LibraCoin),
+    0x0.LibraCoin.mint(integer, & struct resource MintCapability@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.grant_mint_capability(): (),
+    0x0.LibraCoin.zero(): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.value(& struct resource T@0x0.LibraCoin): (integer),
+    0x0.LibraCoin.split(struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.withdraw(&mut struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.join(struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.deposit(&mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (),
+    0x0.LibraCoin.destroy_zero(struct resource T@0x0.LibraCoin): (),
+    0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(struct resource T@0x0.LibraCoin): (),
+]
+Struct Definitions: [
+    resource T@0x0.LibraCoin { value: integer },
+    resource MintCapability@0x0.LibraCoin {  },
+]
+Field Definitions: [
+    value: integer,
+]
+Type Signatures: [
+    integer,
+]
+Function Signatures: [
+    (): (& struct resource MintCapability@0x0.LibraCoin),
+    (integer, & struct resource MintCapability@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    (): (),
+    (): (struct resource T@0x0.LibraCoin),
+    (& struct resource T@0x0.LibraCoin): (integer),
+    (struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin),
+    (&mut struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin),
+    (struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    (&mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (),
+    (struct resource T@0x0.LibraCoin): (),
+]
+Local Signatures: [
+    address, &mut struct resource MintCapability@0x0.LibraCoin, & struct resource MintCapability@0x0.LibraCoin,
+    integer, & struct resource MintCapability@0x0.LibraCoin,
+    ,
+    & struct resource T@0x0.LibraCoin,
+    struct resource T@0x0.LibraCoin, integer, struct resource T@0x0.LibraCoin,
+    &mut struct resource T@0x0.LibraCoin, integer, integer,
+    struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin,
+    &mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin, integer, integer,
+    struct resource T@0x0.LibraCoin, integer,
+]
+Strings: [
+    LibraCoin,
+    T,
+    value,
+    MintCapability,
+    borrow_sender_mint_capability,
+    mint,
+    grant_mint_capability,
+    zero,
+    split,
+    withdraw,
+    join,
+    deposit,
+    destroy_zero,
+    TODO_REMOVE_burn_gas_fee,
+]
+ByteArrays: [
+]
+Addresses: [
+    0x0,
+]
+Function Definitions: [
+    public 0x0.LibraCoin.borrow_sender_mint_capability(): (& struct resource MintCapability@0x0.LibraCoin)
+        max_stack_size: 4
+        locals: address, &mut struct resource MintCapability@0x0.LibraCoin, & struct resource MintCapability@0x0.LibraCoin
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(0)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(1)         [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        FREEZE_REF                         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraCoin.mint(integer, & struct resource MintCapability@0x0.LibraCoin): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 2
+        locals: integer, & struct resource MintCapability@0x0.LibraCoin
+        MOVE_LOC IdxLocal(1)               [0,1]
+        RELEASE_REF                        [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        PACK IdxStructDef(0)               [1,1]
+        RET                                [1,0]
+    ,
+    0x0.LibraCoin.grant_mint_capability(): ()
+        max_stack_size: 2
+        locals: 
+        PACK IdxStructDef(1)               [0,1]
+        MOVE_TO IdxStructDef(1)            [1,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraCoin.zero(): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 1
+        locals: 
+        LD_CONST ImmUint64(0)              [0,1]
+        PACK IdxStructDef(0)               [1,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraCoin.value(& struct resource T@0x0.LibraCoin): (integer)
+        max_stack_size: 1
+        locals: & struct resource T@0x0.LibraCoin
+        MOVE_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(0)        [1,1]
+        READ_REF                           [1,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraCoin.split(struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin)
+        max_stack_size: 3
+        locals: struct resource T@0x0.LibraCoin, integer, struct resource T@0x0.LibraCoin
+        LD_REF_LOC IdxLocal(0)             [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(6)              [2,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(2)               [1,2]
+        RET                                [2,0]
+    ,
+    public 0x0.LibraCoin.withdraw(&mut struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 3
+        locals: &mut struct resource T@0x0.LibraCoin, integer, integer
+        COPY_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(0)        [1,1]
+        READ_REF                           [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        LD_CONST ImmUint64(10)             [0,1]
+        COPY_LOC IdxLocal(2)               [1,2]
+        COPY_LOC IdxLocal(1)               [2,3]
+        GE                                 [3,2]
+        ASSERT                             [2,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        COPY_LOC IdxLocal(1)               [1,2]
+        SUB                                [2,1]
+        MOVE_LOC IdxLocal(0)               [1,2]
+        LD_REF_FIELD IdxFieldDef(0)        [2,2]
+        WRITE_REF                          [2,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        PACK IdxStructDef(0)               [1,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraCoin.join(struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 2
+        locals: struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin
+        LD_REF_LOC IdxLocal(0)             [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(8)              [2,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraCoin.deposit(&mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): ()
+        max_stack_size: 2
+        locals: &mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin, integer, integer
+        COPY_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(0)        [1,1]
+        READ_REF                           [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        UNPACK IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        MOVE_LOC IdxLocal(3)               [1,2]
+        ADD                                [2,1]
+        MOVE_LOC IdxLocal(0)               [1,2]
+        LD_REF_FIELD IdxFieldDef(0)        [2,2]
+        WRITE_REF                          [2,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraCoin.destroy_zero(struct resource T@0x0.LibraCoin): ()
+        max_stack_size: 3
+        locals: struct resource T@0x0.LibraCoin, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        UNPACK IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        LD_CONST ImmUint64(11)             [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        LD_CONST ImmUint64(0)              [2,3]
+        EQ                                 [3,2]
+        ASSERT                             [2,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(struct resource T@0x0.LibraCoin): ()
+        max_stack_size: 1
+        locals: struct resource T@0x0.LibraCoin, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        UNPACK IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        RET                                [0,0]
+    ,
+]
+

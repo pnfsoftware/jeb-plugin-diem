@@ -1,0 +1,66 @@
+CompiledProgram: {
+Modules: [
+],
+Script: CompiledScript: {
+Main:
+	public 0x0.<SELF>.main(): ()
+		locals(0): Address, Bool, resource T@0x0.LibraCoin, Bool,
+		LdAddr(0x111111111111111111111111111111111111011111111111111111111111110)
+		StLoc(0)
+		CopyLoc(0)
+		Call(0x0.LibraAccount.exists(Address): (Bool))
+		StLoc(1)
+		LdConst(83)
+		MoveLoc(1)
+		Not
+		Assert
+		LdConst(10)
+		Call(0x0.LibraAccount.withdraw_from_sender(Integer): (resource T@0x0.LibraCoin))
+		StLoc(2)
+		CopyLoc(0)
+		CreateAccount
+		CopyLoc(0)
+		MoveLoc(2)
+		Call(0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): ())
+		CopyLoc(0)
+		Call(0x0.LibraAccount.exists(Address): (Bool))
+		StLoc(3)
+		LdConst(84)
+		MoveLoc(3)
+		Assert
+		Ret
+Struct Handles: [
+	resource T@0x0.LibraCoin,]
+Module Handles: [
+	0x0.<SELF>,
+	0x0.LibraAccount,
+	0x0.LibraCoin,]
+Function Handles: [
+	0x0.<SELF>.main(): (),
+	0x0.LibraAccount.exists(Address): (Bool),
+	0x0.LibraAccount.withdraw_from_sender(Integer): (resource T@0x0.LibraCoin),
+	0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): (),]
+Type Signatures: []
+Function Signatures: [
+	(): (),
+	(Address): (Bool),
+	(Integer): (resource T@0x0.LibraCoin),
+	(Address, resource T@0x0.LibraCoin): (),]
+Locals Signatures: [
+	Address, Bool, resource T@0x0.LibraCoin, Bool,]
+Strings: [
+	<SELF>,
+	LibraAccount,
+	LibraCoin,
+	main,
+	T,
+	exists,
+	withdraw_from_sender,
+	deposit,]
+ByteArrays: []
+Addresses: [
+	0x0,
+	0x111111111111111111111111111111111111011111111111111111111111110,]
+}
+
+}

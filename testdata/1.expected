@@ -1,0 +1,55 @@
+Module Handles: [
+    0x0.<SELF>,
+]
+Struct Handles: [
+]
+Function Handles: [
+    0x0.<SELF>.main(): (),
+]
+Struct Definitions: [
+]
+Field Definitions: [
+]
+Type Signatures: [
+]
+Function Signatures: [
+    (): (),
+]
+Local Signatures: [
+    integer,
+]
+Strings: [
+    <SELF>,
+    main,
+]
+ByteArrays: [
+]
+Addresses: [
+    0x0,
+]
+Function Definitions: [
+]
+public 0x0.<SELF>.main(): ()
+    max_stack_size: 3
+    locals: integer
+    LD_CONST ImmUint64(0)              [0,1]
+    ST_LOC IdxLocal(0)                 [1,0]
+    LD_TRUE                            [0,1]
+    BR_FALSE Branch(14)                [1,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    LD_CONST ImmUint64(5)              [1,2]
+    GE                                 [2,1]
+    BR_FALSE Branch(9)                 [1,0]
+    BRANCH Branch(14)                  [0,0]
+    MOVE_LOC IdxLocal(0)               [0,1]
+    LD_CONST ImmUint64(1)              [1,2]
+    ADD                                [2,1]
+    ST_LOC IdxLocal(0)                 [1,0]
+    BRANCH Branch(2)                   [0,0]
+    LD_CONST ImmUint64(42)             [0,1]
+    MOVE_LOC IdxLocal(0)               [1,2]
+    LD_CONST ImmUint64(5)              [2,3]
+    EQ                                 [3,2]
+    ASSERT                             [2,0]
+    RET                                [0,0]
+

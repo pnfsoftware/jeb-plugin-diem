@@ -1,0 +1,172 @@
+CompiledModule: {
+Module Handles: [
+	0x0.LibraCoin,]
+Struct Handles: [
+	resource T@0x0.LibraCoin,
+	resource MintCapability@0x0.LibraCoin,]
+Function Handles: [
+	0x0.LibraCoin.borrow_sender_mint_capability(): (&resource MintCapability@0x0.LibraCoin),
+	0x0.LibraCoin.mint(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.grant_mint_capability(): (),
+	0x0.LibraCoin.zero(): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.value(&resource T@0x0.LibraCoin): (Integer),
+	0x0.LibraCoin.split(resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin, resource T@0x0.LibraCoin),
+	0x0.LibraCoin.withdraw(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.join(resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.deposit(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (),
+	0x0.LibraCoin.destroy_zero(resource T@0x0.LibraCoin): (),
+	0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(resource T@0x0.LibraCoin): (),]
+Struct Definitions: [
+	{resource T@0x0.LibraCoin
+		resource T@0x0.LibraCoin.value: Integer},
+	{resource MintCapability@0x0.LibraCoin},]
+Field Definitions: [
+	resource T@0x0.LibraCoin.value: Integer,]
+Function Definitions: [
+	public 0x0.LibraCoin.borrow_sender_mint_capability(): (&resource MintCapability@0x0.LibraCoin)
+		locals(0): Address, &mut resource MintCapability@0x0.LibraCoin, &resource MintCapability@0x0.LibraCoin,
+		GetTxnSenderAddress
+		StLoc(0)
+		MoveLoc(0)
+		BorrowGlobal(1)
+		StLoc(1)
+		MoveLoc(1)
+		FreezeRef
+		StLoc(2)
+		MoveLoc(2)
+		Ret,
+	public 0x0.LibraCoin.mint(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin)
+		locals(1): Integer, &resource MintCapability@0x0.LibraCoin,
+		MoveLoc(1)
+		ReleaseRef
+		MoveLoc(0)
+		Pack(0)
+		Ret,
+	0x0.LibraCoin.grant_mint_capability(): ()
+		locals(2): ,
+		Pack(1)
+		MoveToSender(1)
+		Ret,
+	public 0x0.LibraCoin.zero(): (resource T@0x0.LibraCoin)
+		locals(2): ,
+		LdConst(0)
+		Pack(0)
+		Ret,
+	public 0x0.LibraCoin.value(&resource T@0x0.LibraCoin): (Integer)
+		locals(3): &resource T@0x0.LibraCoin,
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraCoin.value: Integer)
+		ReadRef
+		Ret,
+	public 0x0.LibraCoin.split(resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin, resource T@0x0.LibraCoin)
+		locals(4): resource T@0x0.LibraCoin, Integer, resource T@0x0.LibraCoin,
+		BorrowLoc(0)
+		MoveLoc(1)
+		Call(0x0.LibraCoin.withdraw(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin))
+		StLoc(2)
+		MoveLoc(0)
+		MoveLoc(2)
+		Ret,
+	public 0x0.LibraCoin.withdraw(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin)
+		locals(5): &mut resource T@0x0.LibraCoin, Integer, Integer,
+		CopyLoc(0)
+		BorrowField(resource T@0x0.LibraCoin.value: Integer)
+		ReadRef
+		StLoc(2)
+		LdConst(10)
+		CopyLoc(2)
+		CopyLoc(1)
+		Ge
+		Assert
+		MoveLoc(2)
+		CopyLoc(1)
+		Sub
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraCoin.value: Integer)
+		WriteRef
+		MoveLoc(1)
+		Pack(0)
+		Ret,
+	public 0x0.LibraCoin.join(resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (resource T@0x0.LibraCoin)
+		locals(6): resource T@0x0.LibraCoin, resource T@0x0.LibraCoin,
+		BorrowLoc(0)
+		MoveLoc(1)
+		Call(0x0.LibraCoin.deposit(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): ())
+		MoveLoc(0)
+		Ret,
+	public 0x0.LibraCoin.deposit(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): ()
+		locals(7): &mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin, Integer, Integer,
+		CopyLoc(0)
+		BorrowField(resource T@0x0.LibraCoin.value: Integer)
+		ReadRef
+		StLoc(2)
+		MoveLoc(1)
+		Unpack(0)
+		StLoc(3)
+		MoveLoc(2)
+		MoveLoc(3)
+		Add
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraCoin.value: Integer)
+		WriteRef
+		Ret,
+	public 0x0.LibraCoin.destroy_zero(resource T@0x0.LibraCoin): ()
+		locals(8): resource T@0x0.LibraCoin, Integer,
+		MoveLoc(0)
+		Unpack(0)
+		StLoc(1)
+		LdConst(11)
+		MoveLoc(1)
+		LdConst(0)
+		Eq
+		Assert
+		Ret,
+	public 0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(resource T@0x0.LibraCoin): ()
+		locals(8): resource T@0x0.LibraCoin, Integer,
+		MoveLoc(0)
+		Unpack(0)
+		StLoc(1)
+		Ret,]
+Type Signatures: [
+	Integer,]
+Function Signatures: [
+	(): (&resource MintCapability@0x0.LibraCoin),
+	(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	(): (),
+	(): (resource T@0x0.LibraCoin),
+	(&resource T@0x0.LibraCoin): (Integer),
+	(resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin, resource T@0x0.LibraCoin),
+	(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin),
+	(resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (),
+	(resource T@0x0.LibraCoin): (),]
+Locals Signatures: [
+	Address, &mut resource MintCapability@0x0.LibraCoin, &resource MintCapability@0x0.LibraCoin,
+	Integer, &resource MintCapability@0x0.LibraCoin,
+	,
+	&resource T@0x0.LibraCoin,
+	resource T@0x0.LibraCoin, Integer, resource T@0x0.LibraCoin,
+	&mut resource T@0x0.LibraCoin, Integer, Integer,
+	resource T@0x0.LibraCoin, resource T@0x0.LibraCoin,
+	&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin, Integer, Integer,
+	resource T@0x0.LibraCoin, Integer,]
+Strings: [
+	LibraCoin,
+	T,
+	value,
+	MintCapability,
+	borrow_sender_mint_capability,
+	mint,
+	grant_mint_capability,
+	zero,
+	split,
+	withdraw,
+	join,
+	deposit,
+	destroy_zero,
+	TODO_REMOVE_burn_gas_fee,]
+ByteArrays: []
+Addresses: [
+	0x0,]
+}
+

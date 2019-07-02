@@ -1,0 +1,46 @@
+CompiledProgram: {
+Modules: [
+],
+Script: CompiledScript: {
+Main:
+	public 0x0.<SELF>.main(): ()
+		locals(0): ByteArray, ByteArray, ByteArray,
+		LdByteArray(0)
+		StLoc(0)
+		CopyLoc(0)
+		Call(0x0.Hash.keccak256(ByteArray): (ByteArray))
+		StLoc(1)
+		LdByteArray(1)
+		StLoc(2)
+		LdConst(42)
+		MoveLoc(1)
+		MoveLoc(2)
+		Eq
+		Assert
+		Ret
+Struct Handles: []
+Module Handles: [
+	0x0.<SELF>,
+	0x0.Hash,]
+Function Handles: [
+	0x0.<SELF>.main(): (),
+	0x0.Hash.keccak256(ByteArray): (ByteArray),]
+Type Signatures: []
+Function Signatures: [
+	(): (),
+	(ByteArray): (ByteArray),]
+Locals Signatures: [
+	ByteArray, ByteArray, ByteArray,]
+Strings: [
+	<SELF>,
+	Hash,
+	main,
+	keccak256,]
+ByteArrays: [
+	0x616263,
+	0x4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45,]
+Addresses: [
+	0x0,]
+}
+
+}

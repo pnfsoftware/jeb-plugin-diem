@@ -1,0 +1,435 @@
+CompiledModule: {
+Module Handles: [
+	0x0.LibraAccount,
+	0x0.LibraCoin,
+	0x0.Hash,]
+Struct Handles: [
+	resource T@0x0.LibraAccount,
+	resource T@0x0.LibraCoin,
+	struct SentPaymentEvent@0x0.LibraAccount,
+	struct ReceivedPaymentEvent@0x0.LibraAccount,
+	resource MintCapability@0x0.LibraCoin,]
+Function Handles: [
+	0x0.LibraAccount.make(ByteArray): (resource T@0x0.LibraAccount),
+	0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): (),
+	0x0.LibraAccount.mint_to_address(Address, Integer): (),
+	0x0.LibraAccount.withdraw_from_account(&mut resource T@0x0.LibraAccount, Integer): (resource T@0x0.LibraCoin),
+	0x0.LibraAccount.withdraw_from_sender(Integer): (resource T@0x0.LibraCoin),
+	0x0.LibraAccount.pay_from_sender(Address, Integer): (),
+	0x0.LibraAccount.rotate_authentication_key(ByteArray): (),
+	0x0.LibraAccount.create_new_account(Address, Integer): (),
+	0x0.LibraAccount.balance_for_account(&resource T@0x0.LibraAccount): (Integer),
+	0x0.LibraAccount.balance(Address): (Integer),
+	0x0.LibraAccount.sequence_number_for_account(&resource T@0x0.LibraAccount): (Integer),
+	0x0.LibraAccount.sequence_number(Address): (Integer),
+	0x0.LibraAccount.exists(Address): (Bool),
+	0x0.LibraAccount.prologue(): (),
+	0x0.LibraAccount.epilogue(): (),
+	0x0.LibraCoin.zero(): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.value(&resource T@0x0.LibraCoin): (Integer),
+	0x0.LibraCoin.deposit(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (),
+	0x0.LibraCoin.borrow_sender_mint_capability(): (&resource MintCapability@0x0.LibraCoin),
+	0x0.LibraCoin.mint(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	0x0.LibraCoin.withdraw(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin),
+	0x0.Hash.sha3_256(ByteArray): (ByteArray),
+	0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(resource T@0x0.LibraCoin): (),]
+Struct Definitions: [
+	{resource T@0x0.LibraAccount
+		resource T@0x0.LibraAccount.authentication_key: ByteArray
+		resource T@0x0.LibraAccount.balance: resource T@0x0.LibraCoin
+		resource T@0x0.LibraAccount.received_events_count: Integer
+		resource T@0x0.LibraAccount.sent_events_count: Integer
+		resource T@0x0.LibraAccount.sequence_number: Integer},
+	{struct SentPaymentEvent@0x0.LibraAccount
+		struct SentPaymentEvent@0x0.LibraAccount.amount: Integer
+		struct SentPaymentEvent@0x0.LibraAccount.payee: Address},
+	{struct ReceivedPaymentEvent@0x0.LibraAccount
+		struct ReceivedPaymentEvent@0x0.LibraAccount.amount: Integer
+		struct ReceivedPaymentEvent@0x0.LibraAccount.payer: Address},]
+Field Definitions: [
+	resource T@0x0.LibraAccount.authentication_key: ByteArray,
+	resource T@0x0.LibraAccount.balance: resource T@0x0.LibraCoin,
+	resource T@0x0.LibraAccount.received_events_count: Integer,
+	resource T@0x0.LibraAccount.sent_events_count: Integer,
+	resource T@0x0.LibraAccount.sequence_number: Integer,
+	struct SentPaymentEvent@0x0.LibraAccount.amount: Integer,
+	struct SentPaymentEvent@0x0.LibraAccount.payee: Address,
+	struct ReceivedPaymentEvent@0x0.LibraAccount.amount: Integer,
+	struct ReceivedPaymentEvent@0x0.LibraAccount.payer: Address,]
+Function Definitions: [
+	0x0.LibraAccount.make(ByteArray): (resource T@0x0.LibraAccount)
+		locals(0): ByteArray, resource T@0x0.LibraCoin,
+		Call(0x0.LibraCoin.zero(): (resource T@0x0.LibraCoin))
+		StLoc(1)
+		MoveLoc(0)
+		MoveLoc(1)
+		LdConst(0)
+		LdConst(0)
+		LdConst(0)
+		Pack(0)
+		Ret,
+	public 0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): ()
+		locals(1): Address, resource T@0x0.LibraCoin, Integer, &mut resource T@0x0.LibraAccount, Address, &mut resource T@0x0.LibraAccount, struct SentPaymentEvent@0x0.LibraAccount, struct ReceivedPaymentEvent@0x0.LibraAccount,
+		BorrowLoc(1)
+		FreezeRef
+		Call(0x0.LibraCoin.value(&resource T@0x0.LibraCoin): (Integer))
+		StLoc(2)
+		LdConst(7)
+		CopyLoc(2)
+		LdConst(0)
+		Gt
+		Assert
+		GetTxnSenderAddress
+		StLoc(4)
+		CopyLoc(4)
+		BorrowGlobal(0)
+		StLoc(5)
+		CopyLoc(2)
+		CopyLoc(0)
+		Pack(1)
+		StLoc(6)
+		MoveLoc(5)
+		BorrowField(resource T@0x0.LibraAccount.sent_events_count: Integer)
+		LdByteArray(0)
+		MoveLoc(6)
+		EmitEvent
+		MoveLoc(0)
+		BorrowGlobal(0)
+		StLoc(3)
+		CopyLoc(3)
+		BorrowField(resource T@0x0.LibraAccount.balance: resource T@0x0.LibraCoin)
+		MoveLoc(1)
+		Call(0x0.LibraCoin.deposit(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): ())
+		MoveLoc(2)
+		MoveLoc(4)
+		Pack(2)
+		StLoc(7)
+		MoveLoc(3)
+		BorrowField(resource T@0x0.LibraAccount.received_events_count: Integer)
+		LdByteArray(1)
+		MoveLoc(7)
+		EmitEvent
+		Ret,
+	public 0x0.LibraAccount.mint_to_address(Address, Integer): ()
+		locals(2): Address, Integer, &resource MintCapability@0x0.LibraCoin, resource T@0x0.LibraCoin, &mut resource T@0x0.LibraAccount, Bool, Address,
+		Call(0x0.LibraCoin.borrow_sender_mint_capability(): (&resource MintCapability@0x0.LibraCoin))
+		StLoc(2)
+		CopyLoc(1)
+		MoveLoc(2)
+		Call(0x0.LibraCoin.mint(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin))
+		StLoc(3)
+		CopyLoc(0)
+		Exists(0)
+		StLoc(5)
+		MoveLoc(5)
+		Not
+		BrFalse(17)
+		GetTxnSenderAddress
+		StLoc(6)
+		CopyLoc(0)
+		LdConst(0)
+		Call(0x0.LibraAccount.create_new_account(Address, Integer): ())
+		MoveLoc(0)
+		MoveLoc(3)
+		Call(0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): ())
+		Ret,
+	0x0.LibraAccount.withdraw_from_account(&mut resource T@0x0.LibraAccount, Integer): (resource T@0x0.LibraCoin)
+		locals(3): &mut resource T@0x0.LibraAccount, Integer, resource T@0x0.LibraCoin,
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraAccount.balance: resource T@0x0.LibraCoin)
+		CopyLoc(1)
+		Call(0x0.LibraCoin.withdraw(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin))
+		StLoc(2)
+		MoveLoc(2)
+		Ret,
+	public 0x0.LibraAccount.withdraw_from_sender(Integer): (resource T@0x0.LibraCoin)
+		locals(4): Integer, Address, &mut resource T@0x0.LibraAccount, resource T@0x0.LibraCoin,
+		GetTxnSenderAddress
+		StLoc(1)
+		MoveLoc(1)
+		BorrowGlobal(0)
+		StLoc(2)
+		MoveLoc(2)
+		MoveLoc(0)
+		Call(0x0.LibraAccount.withdraw_from_account(&mut resource T@0x0.LibraAccount, Integer): (resource T@0x0.LibraCoin))
+		StLoc(3)
+		MoveLoc(3)
+		Ret,
+	public 0x0.LibraAccount.pay_from_sender(Address, Integer): ()
+		locals(5): Address, Integer, resource T@0x0.LibraCoin, Bool,
+		CopyLoc(0)
+		Exists(0)
+		StLoc(3)
+		MoveLoc(3)
+		BrFalse(12)
+		MoveLoc(1)
+		Call(0x0.LibraAccount.withdraw_from_sender(Integer): (resource T@0x0.LibraCoin))
+		StLoc(2)
+		MoveLoc(0)
+		MoveLoc(2)
+		Call(0x0.LibraAccount.deposit(Address, resource T@0x0.LibraCoin): ())
+		Branch(15)
+		MoveLoc(0)
+		MoveLoc(1)
+		Call(0x0.LibraAccount.create_new_account(Address, Integer): ())
+		Ret,
+	public 0x0.LibraAccount.rotate_authentication_key(ByteArray): ()
+		locals(6): ByteArray, Address, &mut resource T@0x0.LibraAccount,
+		GetTxnSenderAddress
+		StLoc(1)
+		MoveLoc(1)
+		BorrowGlobal(0)
+		StLoc(2)
+		MoveLoc(0)
+		MoveLoc(2)
+		BorrowField(resource T@0x0.LibraAccount.authentication_key: ByteArray)
+		WriteRef
+		Ret,
+	public 0x0.LibraAccount.create_new_account(Address, Integer): ()
+		locals(7): Address, Integer,
+		CopyLoc(0)
+		CreateAccount
+		CopyLoc(1)
+		LdConst(0)
+		Gt
+		BrFalse(9)
+		MoveLoc(0)
+		MoveLoc(1)
+		Call(0x0.LibraAccount.pay_from_sender(Address, Integer): ())
+		Ret,
+	0x0.LibraAccount.balance_for_account(&resource T@0x0.LibraAccount): (Integer)
+		locals(8): &resource T@0x0.LibraAccount, Integer,
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraAccount.balance: resource T@0x0.LibraCoin)
+		Call(0x0.LibraCoin.value(&resource T@0x0.LibraCoin): (Integer))
+		StLoc(1)
+		MoveLoc(1)
+		Ret,
+	public 0x0.LibraAccount.balance(Address): (Integer)
+		locals(9): Address, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, Integer,
+		MoveLoc(0)
+		BorrowGlobal(0)
+		StLoc(1)
+		MoveLoc(1)
+		FreezeRef
+		StLoc(2)
+		MoveLoc(2)
+		Call(0x0.LibraAccount.balance_for_account(&resource T@0x0.LibraAccount): (Integer))
+		StLoc(3)
+		MoveLoc(3)
+		Ret,
+	0x0.LibraAccount.sequence_number_for_account(&resource T@0x0.LibraAccount): (Integer)
+		locals(10): &resource T@0x0.LibraAccount,
+		MoveLoc(0)
+		BorrowField(resource T@0x0.LibraAccount.sequence_number: Integer)
+		ReadRef
+		Ret,
+	public 0x0.LibraAccount.sequence_number(Address): (Integer)
+		locals(9): Address, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, Integer,
+		MoveLoc(0)
+		BorrowGlobal(0)
+		StLoc(1)
+		MoveLoc(1)
+		FreezeRef
+		StLoc(2)
+		MoveLoc(2)
+		Call(0x0.LibraAccount.sequence_number_for_account(&resource T@0x0.LibraAccount): (Integer))
+		StLoc(3)
+		MoveLoc(3)
+		Ret,
+	public 0x0.LibraAccount.exists(Address): (Bool)
+		locals(11): Address, Bool,
+		MoveLoc(0)
+		Exists(0)
+		StLoc(1)
+		MoveLoc(1)
+		Ret,
+	0x0.LibraAccount.prologue(): ()
+		locals(12): Address, Bool, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, ByteArray, ByteArray, Integer, Integer, Integer, Integer, Integer, Integer,
+		GetTxnSenderAddress
+		StLoc(0)
+		CopyLoc(0)
+		Exists(0)
+		StLoc(1)
+		LdConst(5)
+		MoveLoc(1)
+		Assert
+		CopyLoc(0)
+		BorrowGlobal(0)
+		StLoc(2)
+		GetTxnPublicKey
+		StLoc(4)
+		MoveLoc(4)
+		Call(0x0.Hash.sha3_256(ByteArray): (ByteArray))
+		StLoc(5)
+		LdConst(2)
+		MoveLoc(5)
+		CopyLoc(2)
+		BorrowField(resource T@0x0.LibraAccount.authentication_key: ByteArray)
+		FreezeRef
+		ReadRef
+		Eq
+		Assert
+		GetTxnGasUnitPrice
+		StLoc(6)
+		GetTxnMaxGasUnits
+		StLoc(7)
+		MoveLoc(6)
+		MoveLoc(7)
+		Mul
+		StLoc(8)
+		CopyLoc(2)
+		FreezeRef
+		StLoc(3)
+		MoveLoc(3)
+		Call(0x0.LibraAccount.balance_for_account(&resource T@0x0.LibraAccount): (Integer))
+		StLoc(9)
+		LdConst(6)
+		MoveLoc(9)
+		MoveLoc(8)
+		Ge
+		Assert
+		MoveLoc(2)
+		BorrowField(resource T@0x0.LibraAccount.sequence_number: Integer)
+		ReadRef
+		StLoc(10)
+		GetTxnSequenceNumber
+		StLoc(11)
+		LdConst(3)
+		CopyLoc(11)
+		CopyLoc(10)
+		Ge
+		Assert
+		LdConst(4)
+		MoveLoc(11)
+		MoveLoc(10)
+		Eq
+		Assert
+		Ret,
+	0x0.LibraAccount.epilogue(): ()
+		locals(13): Address, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, Integer, Integer, Integer, Integer, Integer, resource T@0x0.LibraCoin, Integer,
+		GetTxnSenderAddress
+		StLoc(0)
+		CopyLoc(0)
+		BorrowGlobal(0)
+		StLoc(1)
+		GetTxnGasUnitPrice
+		StLoc(3)
+		GetTxnMaxGasUnits
+		StLoc(5)
+		GetGasRemaining
+		StLoc(4)
+		MoveLoc(3)
+		MoveLoc(5)
+		MoveLoc(4)
+		Sub
+		Mul
+		StLoc(6)
+		CopyLoc(1)
+		FreezeRef
+		StLoc(2)
+		MoveLoc(2)
+		Call(0x0.LibraAccount.balance_for_account(&resource T@0x0.LibraAccount): (Integer))
+		StLoc(7)
+		LdConst(6)
+		MoveLoc(7)
+		CopyLoc(6)
+		Ge
+		Assert
+		CopyLoc(1)
+		MoveLoc(6)
+		Call(0x0.LibraAccount.withdraw_from_account(&mut resource T@0x0.LibraAccount, Integer): (resource T@0x0.LibraCoin))
+		StLoc(8)
+		MoveLoc(8)
+		Call(0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(resource T@0x0.LibraCoin): ())
+		GetTxnSequenceNumber
+		StLoc(9)
+		MoveLoc(9)
+		LdConst(1)
+		Add
+		MoveLoc(1)
+		BorrowField(resource T@0x0.LibraAccount.sequence_number: Integer)
+		WriteRef
+		Ret,]
+Type Signatures: [
+	ByteArray,
+	resource T@0x0.LibraCoin,
+	Integer,
+	Address,]
+Function Signatures: [
+	(ByteArray): (resource T@0x0.LibraAccount),
+	(Address, resource T@0x0.LibraCoin): (),
+	(Address, Integer): (),
+	(&mut resource T@0x0.LibraAccount, Integer): (resource T@0x0.LibraCoin),
+	(Integer): (resource T@0x0.LibraCoin),
+	(ByteArray): (),
+	(&resource T@0x0.LibraAccount): (Integer),
+	(Address): (Integer),
+	(Address): (Bool),
+	(): (),
+	(): (resource T@0x0.LibraCoin),
+	(&resource T@0x0.LibraCoin): (Integer),
+	(&mut resource T@0x0.LibraCoin, resource T@0x0.LibraCoin): (),
+	(): (&resource MintCapability@0x0.LibraCoin),
+	(Integer, &resource MintCapability@0x0.LibraCoin): (resource T@0x0.LibraCoin),
+	(&mut resource T@0x0.LibraCoin, Integer): (resource T@0x0.LibraCoin),
+	(ByteArray): (ByteArray),
+	(resource T@0x0.LibraCoin): (),]
+Locals Signatures: [
+	ByteArray, resource T@0x0.LibraCoin,
+	Address, resource T@0x0.LibraCoin, Integer, &mut resource T@0x0.LibraAccount, Address, &mut resource T@0x0.LibraAccount, struct SentPaymentEvent@0x0.LibraAccount, struct ReceivedPaymentEvent@0x0.LibraAccount,
+	Address, Integer, &resource MintCapability@0x0.LibraCoin, resource T@0x0.LibraCoin, &mut resource T@0x0.LibraAccount, Bool, Address,
+	&mut resource T@0x0.LibraAccount, Integer, resource T@0x0.LibraCoin,
+	Integer, Address, &mut resource T@0x0.LibraAccount, resource T@0x0.LibraCoin,
+	Address, Integer, resource T@0x0.LibraCoin, Bool,
+	ByteArray, Address, &mut resource T@0x0.LibraAccount,
+	Address, Integer,
+	&resource T@0x0.LibraAccount, Integer,
+	Address, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, Integer,
+	&resource T@0x0.LibraAccount,
+	Address, Bool,
+	Address, Bool, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, ByteArray, ByteArray, Integer, Integer, Integer, Integer, Integer, Integer,
+	Address, &mut resource T@0x0.LibraAccount, &resource T@0x0.LibraAccount, Integer, Integer, Integer, Integer, Integer, resource T@0x0.LibraCoin, Integer,]
+Strings: [
+	LibraAccount,
+	LibraCoin,
+	Hash,
+	T,
+	authentication_key,
+	balance,
+	received_events_count,
+	sent_events_count,
+	sequence_number,
+	SentPaymentEvent,
+	amount,
+	payee,
+	ReceivedPaymentEvent,
+	payer,
+	make,
+	deposit,
+	mint_to_address,
+	withdraw_from_account,
+	withdraw_from_sender,
+	pay_from_sender,
+	rotate_authentication_key,
+	create_new_account,
+	balance_for_account,
+	sequence_number_for_account,
+	exists,
+	prologue,
+	epilogue,
+	zero,
+	value,
+	MintCapability,
+	borrow_sender_mint_capability,
+	mint,
+	withdraw,
+	sha3_256,
+	TODO_REMOVE_burn_gas_fee,]
+ByteArrays: [
+	0x73656e745f6576656e74735f636f756e74,
+	0x72656365697665645f6576656e74735f636f756e74,]
+Addresses: [
+	0x0,]
+}
+

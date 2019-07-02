@@ -1,0 +1,466 @@
+Module Handles: [
+    0x0.LibraAccount,
+    0x0.LibraCoin,
+    0x0.Hash,
+]
+Struct Handles: [
+    resource T@0x0.LibraAccount,
+    resource T@0x0.LibraCoin,
+    SentPaymentEvent@0x0.LibraAccount,
+    ReceivedPaymentEvent@0x0.LibraAccount,
+    resource MintCapability@0x0.LibraCoin,
+]
+Function Handles: [
+    0x0.LibraAccount.make(bytearray): (struct resource T@0x0.LibraAccount),
+    0x0.LibraAccount.deposit(address, struct resource T@0x0.LibraCoin): (),
+    0x0.LibraAccount.mint_to_address(address, integer): (),
+    0x0.LibraAccount.withdraw_from_account(&mut struct resource T@0x0.LibraAccount, integer): (struct resource T@0x0.LibraCoin),
+    0x0.LibraAccount.withdraw_from_sender(integer): (struct resource T@0x0.LibraCoin),
+    0x0.LibraAccount.pay_from_sender(address, integer): (),
+    0x0.LibraAccount.rotate_authentication_key(bytearray): (),
+    0x0.LibraAccount.create_new_account(address, integer): (),
+    0x0.LibraAccount.balance_for_account(& struct resource T@0x0.LibraAccount): (integer),
+    0x0.LibraAccount.balance(address): (integer),
+    0x0.LibraAccount.sequence_number_for_account(& struct resource T@0x0.LibraAccount): (integer),
+    0x0.LibraAccount.sequence_number(address): (integer),
+    0x0.LibraAccount.exists(address): (bool),
+    0x0.LibraAccount.prologue(): (),
+    0x0.LibraAccount.epilogue(): (),
+    0x0.LibraCoin.zero(): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.value(& struct resource T@0x0.LibraCoin): (integer),
+    0x0.LibraCoin.deposit(&mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (),
+    0x0.LibraCoin.borrow_sender_mint_capability(): (& struct resource MintCapability@0x0.LibraCoin),
+    0x0.LibraCoin.mint(integer, & struct resource MintCapability@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    0x0.LibraCoin.withdraw(&mut struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin),
+    0x0.Hash.sha3_256(bytearray): (bytearray),
+    0x0.LibraCoin.TODO_REMOVE_burn_gas_fee(struct resource T@0x0.LibraCoin): (),
+]
+Struct Definitions: [
+    resource T@0x0.LibraAccount { authentication_key: bytearray, balance: struct resource T@0x0.LibraCoin, received_events_count: integer, sent_events_count: integer, sequence_number: integer },
+    SentPaymentEvent@0x0.LibraAccount { amount: integer, payee: address },
+    ReceivedPaymentEvent@0x0.LibraAccount { amount: integer, payer: address },
+]
+Field Definitions: [
+    authentication_key: bytearray,
+    balance: struct resource T@0x0.LibraCoin,
+    received_events_count: integer,
+    sent_events_count: integer,
+    sequence_number: integer,
+    amount: integer,
+    payee: address,
+    amount: integer,
+    payer: address,
+]
+Type Signatures: [
+    bytearray,
+    struct resource T@0x0.LibraCoin,
+    integer,
+    address,
+]
+Function Signatures: [
+    (bytearray): (struct resource T@0x0.LibraAccount),
+    (address, struct resource T@0x0.LibraCoin): (),
+    (address, integer): (),
+    (&mut struct resource T@0x0.LibraAccount, integer): (struct resource T@0x0.LibraCoin),
+    (integer): (struct resource T@0x0.LibraCoin),
+    (bytearray): (),
+    (& struct resource T@0x0.LibraAccount): (integer),
+    (address): (integer),
+    (address): (bool),
+    (): (),
+    (): (struct resource T@0x0.LibraCoin),
+    (& struct resource T@0x0.LibraCoin): (integer),
+    (&mut struct resource T@0x0.LibraCoin, struct resource T@0x0.LibraCoin): (),
+    (): (& struct resource MintCapability@0x0.LibraCoin),
+    (integer, & struct resource MintCapability@0x0.LibraCoin): (struct resource T@0x0.LibraCoin),
+    (&mut struct resource T@0x0.LibraCoin, integer): (struct resource T@0x0.LibraCoin),
+    (bytearray): (bytearray),
+    (struct resource T@0x0.LibraCoin): (),
+]
+Local Signatures: [
+    bytearray, struct resource T@0x0.LibraCoin,
+    address, struct resource T@0x0.LibraCoin, integer, &mut struct resource T@0x0.LibraAccount, address, &mut struct resource T@0x0.LibraAccount, struct SentPaymentEvent@0x0.LibraAccount, struct ReceivedPaymentEvent@0x0.LibraAccount,
+    address, integer, & struct resource MintCapability@0x0.LibraCoin, struct resource T@0x0.LibraCoin, &mut struct resource T@0x0.LibraAccount, bool, address,
+    &mut struct resource T@0x0.LibraAccount, integer, struct resource T@0x0.LibraCoin,
+    integer, address, &mut struct resource T@0x0.LibraAccount, struct resource T@0x0.LibraCoin,
+    address, integer, struct resource T@0x0.LibraCoin, bool,
+    bytearray, address, &mut struct resource T@0x0.LibraAccount,
+    address, integer,
+    & struct resource T@0x0.LibraAccount, integer,
+    address, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, integer,
+    & struct resource T@0x0.LibraAccount,
+    address, bool,
+    address, bool, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, bytearray, bytearray, integer, integer, integer, integer, integer, integer,
+    address, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, integer, integer, integer, integer, integer, struct resource T@0x0.LibraCoin, integer,
+]
+Strings: [
+    LibraAccount,
+    LibraCoin,
+    Hash,
+    T,
+    authentication_key,
+    balance,
+    received_events_count,
+    sent_events_count,
+    sequence_number,
+    SentPaymentEvent,
+    amount,
+    payee,
+    ReceivedPaymentEvent,
+    payer,
+    make,
+    deposit,
+    mint_to_address,
+    withdraw_from_account,
+    withdraw_from_sender,
+    pay_from_sender,
+    rotate_authentication_key,
+    create_new_account,
+    balance_for_account,
+    sequence_number_for_account,
+    exists,
+    prologue,
+    epilogue,
+    zero,
+    value,
+    MintCapability,
+    borrow_sender_mint_capability,
+    mint,
+    withdraw,
+    sha3_256,
+    TODO_REMOVE_burn_gas_fee,
+]
+ByteArrays: [
+    73656E745F6576656E74735F636F756E74,
+    72656365697665645F6576656E74735F636F756E74,
+]
+Addresses: [
+    0x0,
+]
+Function Definitions: [
+    0x0.LibraAccount.make(bytearray): (struct resource T@0x0.LibraAccount)
+        max_stack_size: 6
+        locals: bytearray, struct resource T@0x0.LibraCoin
+        CALL IdxFuncHandle(15)             [0,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        LD_CONST ImmUint64(0)              [2,3]
+        LD_CONST ImmUint64(0)              [3,4]
+        LD_CONST ImmUint64(0)              [4,5]
+        PACK IdxStructDef(0)               [5,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.deposit(address, struct resource T@0x0.LibraCoin): ()
+        max_stack_size: 8
+        locals: address, struct resource T@0x0.LibraCoin, integer, &mut struct resource T@0x0.LibraAccount, address, &mut struct resource T@0x0.LibraAccount, struct SentPaymentEvent@0x0.LibraAccount, struct ReceivedPaymentEvent@0x0.LibraAccount
+        LD_REF_LOC IdxLocal(1)             [0,1]
+        FREEZE_REF                         [1,1]
+        CALL IdxFuncHandle(16)             [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        LD_CONST ImmUint64(7)              [0,1]
+        COPY_LOC IdxLocal(2)               [1,2]
+        LD_CONST ImmUint64(0)              [2,3]
+        GT                                 [3,2]
+        ASSERT                             [2,0]
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(4)                 [1,0]
+        COPY_LOC IdxLocal(4)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(5)                 [1,0]
+        COPY_LOC IdxLocal(2)               [0,1]
+        COPY_LOC IdxLocal(0)               [1,2]
+        PACK IdxStructDef(1)               [2,1]
+        ST_LOC IdxLocal(6)                 [1,0]
+        MOVE_LOC IdxLocal(5)               [0,1]
+        LD_REF_FIELD IdxFieldDef(3)        [1,1]
+        LD_BYTEARRAY IdxByteArray(0)       [1,2]
+        MOVE_LOC IdxLocal(6)               [2,3]
+        EMIT_EVENT                         [3,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        COPY_LOC IdxLocal(3)               [0,1]
+        LD_REF_FIELD IdxFieldDef(1)        [1,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(17)             [2,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        MOVE_LOC IdxLocal(4)               [1,2]
+        PACK IdxStructDef(2)               [2,1]
+        ST_LOC IdxLocal(7)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        LD_REF_FIELD IdxFieldDef(2)        [1,1]
+        LD_BYTEARRAY IdxByteArray(1)       [1,2]
+        MOVE_LOC IdxLocal(7)               [2,3]
+        EMIT_EVENT                         [3,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraAccount.mint_to_address(address, integer): ()
+        max_stack_size: 7
+        locals: address, integer, & struct resource MintCapability@0x0.LibraCoin, struct resource T@0x0.LibraCoin, &mut struct resource T@0x0.LibraAccount, bool, address
+        CALL IdxFuncHandle(18)             [0,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        COPY_LOC IdxLocal(1)               [0,1]
+        MOVE_LOC IdxLocal(2)               [1,2]
+        CALL IdxFuncHandle(19)             [2,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        EXISTS IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(5)                 [1,0]
+        MOVE_LOC IdxLocal(5)               [0,1]
+        NOT                                [1,1]
+        BR_FALSE Branch(17)                [1,0]
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(6)                 [1,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        LD_CONST ImmUint64(0)              [1,2]
+        CALL IdxFuncHandle(7)              [2,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(3)               [1,2]
+        CALL IdxFuncHandle(1)              [2,0]
+        RET                                [0,0]
+    ,
+    0x0.LibraAccount.withdraw_from_account(&mut struct resource T@0x0.LibraAccount, integer): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 2
+        locals: &mut struct resource T@0x0.LibraAccount, integer, struct resource T@0x0.LibraCoin
+        MOVE_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(1)        [1,1]
+        COPY_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(20)             [2,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.withdraw_from_sender(integer): (struct resource T@0x0.LibraCoin)
+        max_stack_size: 4
+        locals: integer, address, &mut struct resource T@0x0.LibraAccount, struct resource T@0x0.LibraCoin
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        MOVE_LOC IdxLocal(0)               [1,2]
+        CALL IdxFuncHandle(3)              [2,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.pay_from_sender(address, integer): ()
+        max_stack_size: 5
+        locals: address, integer, struct resource T@0x0.LibraCoin, bool
+        COPY_LOC IdxLocal(0)               [0,1]
+        EXISTS IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        BR_FALSE Branch(12)                [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        CALL IdxFuncHandle(4)              [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(2)               [1,2]
+        CALL IdxFuncHandle(1)              [2,0]
+        BRANCH Branch(15)                  [0,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(7)              [2,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraAccount.rotate_authentication_key(bytearray): ()
+        max_stack_size: 4
+        locals: bytearray, address, &mut struct resource T@0x0.LibraAccount
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(2)               [1,2]
+        LD_REF_FIELD IdxFieldDef(0)        [2,2]
+        WRITE_REF                          [2,0]
+        RET                                [0,0]
+    ,
+    public 0x0.LibraAccount.create_new_account(address, integer): ()
+        max_stack_size: 3
+        locals: address, integer
+        COPY_LOC IdxLocal(0)               [0,1]
+        CREATE_ACCOUNT                     [1,0]
+        COPY_LOC IdxLocal(1)               [0,1]
+        LD_CONST ImmUint64(0)              [1,2]
+        GT                                 [2,1]
+        BR_FALSE Branch(9)                 [1,0]
+        MOVE_LOC IdxLocal(0)               [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        CALL IdxFuncHandle(5)              [2,0]
+        RET                                [0,0]
+    ,
+    0x0.LibraAccount.balance_for_account(& struct resource T@0x0.LibraAccount): (integer)
+        max_stack_size: 2
+        locals: & struct resource T@0x0.LibraAccount, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(1)        [1,1]
+        CALL IdxFuncHandle(16)             [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.balance(address): (integer)
+        max_stack_size: 4
+        locals: address, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        FREEZE_REF                         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        CALL IdxFuncHandle(8)              [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        RET                                [1,0]
+    ,
+    0x0.LibraAccount.sequence_number_for_account(& struct resource T@0x0.LibraAccount): (integer)
+        max_stack_size: 1
+        locals: & struct resource T@0x0.LibraAccount
+        MOVE_LOC IdxLocal(0)               [0,1]
+        LD_REF_FIELD IdxFieldDef(4)        [1,1]
+        READ_REF                           [1,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.sequence_number(address): (integer)
+        max_stack_size: 4
+        locals: address, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        FREEZE_REF                         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        CALL IdxFuncHandle(10)             [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.LibraAccount.exists(address): (bool)
+        max_stack_size: 2
+        locals: address, bool
+        MOVE_LOC IdxLocal(0)               [0,1]
+        EXISTS IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        RET                                [1,0]
+    ,
+    0x0.LibraAccount.prologue(): ()
+        max_stack_size: 13
+        locals: address, bool, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, bytearray, bytearray, integer, integer, integer, integer, integer, integer
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(0)                 [1,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        EXISTS IdxStructDef(0)             [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        LD_CONST ImmUint64(5)              [0,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        ASSERT                             [2,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        GET_TXN_PUBLIC_KEY                 [0,1]
+        ST_LOC IdxLocal(4)                 [1,0]
+        MOVE_LOC IdxLocal(4)               [0,1]
+        CALL IdxFuncHandle(21)             [1,1]
+        ST_LOC IdxLocal(5)                 [1,0]
+        LD_CONST ImmUint64(2)              [0,1]
+        MOVE_LOC IdxLocal(5)               [1,2]
+        COPY_LOC IdxLocal(2)               [2,3]
+        LD_REF_FIELD IdxFieldDef(0)        [3,3]
+        FREEZE_REF                         [3,3]
+        READ_REF                           [3,3]
+        EQ                                 [3,2]
+        ASSERT                             [2,0]
+        GET_TXN_GAS_UNIT_PRICE             [0,1]
+        ST_LOC IdxLocal(6)                 [1,0]
+        GET_TXN_MAX_GAS_UNITS              [0,1]
+        ST_LOC IdxLocal(7)                 [1,0]
+        MOVE_LOC IdxLocal(6)               [0,1]
+        MOVE_LOC IdxLocal(7)               [1,2]
+        MUL                                [2,1]
+        ST_LOC IdxLocal(8)                 [1,0]
+        COPY_LOC IdxLocal(2)               [0,1]
+        FREEZE_REF                         [1,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        CALL IdxFuncHandle(8)              [1,1]
+        ST_LOC IdxLocal(9)                 [1,0]
+        LD_CONST ImmUint64(6)              [0,1]
+        MOVE_LOC IdxLocal(9)               [1,2]
+        MOVE_LOC IdxLocal(8)               [2,3]
+        GE                                 [3,2]
+        ASSERT                             [2,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        LD_REF_FIELD IdxFieldDef(4)        [1,1]
+        READ_REF                           [1,1]
+        ST_LOC IdxLocal(10)                [1,0]
+        GET_TXN_SEQUENCE_NUMBER            [0,1]
+        ST_LOC IdxLocal(11)                [1,0]
+        LD_CONST ImmUint64(3)              [0,1]
+        COPY_LOC IdxLocal(11)              [1,2]
+        COPY_LOC IdxLocal(10)              [2,3]
+        GE                                 [3,2]
+        ASSERT                             [2,0]
+        LD_CONST ImmUint64(4)              [0,1]
+        MOVE_LOC IdxLocal(11)              [1,2]
+        MOVE_LOC IdxLocal(10)              [2,3]
+        EQ                                 [3,2]
+        ASSERT                             [2,0]
+        RET                                [0,0]
+    ,
+    0x0.LibraAccount.epilogue(): ()
+        max_stack_size: 12
+        locals: address, &mut struct resource T@0x0.LibraAccount, & struct resource T@0x0.LibraAccount, integer, integer, integer, integer, integer, struct resource T@0x0.LibraCoin, integer
+        GET_TXN_SENDER                     [0,1]
+        ST_LOC IdxLocal(0)                 [1,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        BORROW_REF IdxStructDef(0)         [1,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        GET_TXN_GAS_UNIT_PRICE             [0,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        GET_TXN_MAX_GAS_UNITS              [0,1]
+        ST_LOC IdxLocal(5)                 [1,0]
+        GET_GAS_REMAINING                  [0,1]
+        ST_LOC IdxLocal(4)                 [1,0]
+        MOVE_LOC IdxLocal(3)               [0,1]
+        MOVE_LOC IdxLocal(5)               [1,2]
+        MOVE_LOC IdxLocal(4)               [2,3]
+        SUB                                [3,2]
+        MUL                                [2,1]
+        ST_LOC IdxLocal(6)                 [1,0]
+        COPY_LOC IdxLocal(1)               [0,1]
+        FREEZE_REF                         [1,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        CALL IdxFuncHandle(8)              [1,1]
+        ST_LOC IdxLocal(7)                 [1,0]
+        LD_CONST ImmUint64(6)              [0,1]
+        MOVE_LOC IdxLocal(7)               [1,2]
+        COPY_LOC IdxLocal(6)               [2,3]
+        GE                                 [3,2]
+        ASSERT                             [2,0]
+        COPY_LOC IdxLocal(1)               [0,1]
+        MOVE_LOC IdxLocal(6)               [1,2]
+        CALL IdxFuncHandle(3)              [2,1]
+        ST_LOC IdxLocal(8)                 [1,0]
+        MOVE_LOC IdxLocal(8)               [0,1]
+        CALL IdxFuncHandle(22)             [1,0]
+        GET_TXN_SEQUENCE_NUMBER            [0,1]
+        ST_LOC IdxLocal(9)                 [1,0]
+        MOVE_LOC IdxLocal(9)               [0,1]
+        LD_CONST ImmUint64(1)              [1,2]
+        ADD                                [2,1]
+        MOVE_LOC IdxLocal(1)               [1,2]
+        LD_REF_FIELD IdxFieldDef(4)        [2,2]
+        WRITE_REF                          [2,0]
+        RET                                [0,0]
+    ,
+]
+

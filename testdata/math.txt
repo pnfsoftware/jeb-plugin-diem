@@ -1,0 +1,56 @@
+CompiledModule: {
+Module Handles: [
+	0x0.Math,]
+Struct Handles: []
+Function Handles: [
+	0x0.Math.sum_(Integer, Integer): (Integer),
+	0x0.Math.sum(Integer): (Integer),]
+Struct Definitions: []
+Field Definitions: []
+Function Definitions: [
+	public 0x0.Math.sum_(Integer, Integer): (Integer)
+		locals(0): Integer, Integer, Integer, Integer, Integer,
+		CopyLoc(0)
+		LdConst(0)
+		Eq
+		BrFalse(6)
+		MoveLoc(1)
+		Ret
+		CopyLoc(0)
+		LdConst(1)
+		Sub
+		StLoc(2)
+		MoveLoc(1)
+		MoveLoc(0)
+		Add
+		StLoc(3)
+		MoveLoc(2)
+		MoveLoc(3)
+		Call(0x0.Math.sum_(Integer, Integer): (Integer))
+		StLoc(4)
+		MoveLoc(4)
+		Ret,
+	public 0x0.Math.sum(Integer): (Integer)
+		locals(1): Integer, Integer,
+		MoveLoc(0)
+		LdConst(0)
+		Call(0x0.Math.sum_(Integer, Integer): (Integer))
+		StLoc(1)
+		MoveLoc(1)
+		Ret,]
+Type Signatures: []
+Function Signatures: [
+	(Integer, Integer): (Integer),
+	(Integer): (Integer),]
+Locals Signatures: [
+	Integer, Integer, Integer, Integer, Integer,
+	Integer, Integer,]
+Strings: [
+	Math,
+	sum_,
+	sum,]
+ByteArrays: []
+Addresses: [
+	0x0,]
+}
+

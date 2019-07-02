@@ -1,0 +1,75 @@
+Module Handles: [
+    0x0.<SELF>,
+    0x0.LibraAccount,
+    0x0.LibraCoin,
+]
+Struct Handles: [
+    resource T@0x0.LibraCoin,
+]
+Function Handles: [
+    0x0.<SELF>.main(): (),
+    0x0.LibraAccount.exists(address): (bool),
+    0x0.LibraAccount.withdraw_from_sender(integer): (struct resource T@0x0.LibraCoin),
+    0x0.LibraAccount.deposit(address, struct resource T@0x0.LibraCoin): (),
+]
+Struct Definitions: [
+]
+Field Definitions: [
+]
+Type Signatures: [
+]
+Function Signatures: [
+    (): (),
+    (address): (bool),
+    (integer): (struct resource T@0x0.LibraCoin),
+    (address, struct resource T@0x0.LibraCoin): (),
+]
+Local Signatures: [
+    address, bool, struct resource T@0x0.LibraCoin, bool,
+]
+Strings: [
+    <SELF>,
+    LibraAccount,
+    LibraCoin,
+    main,
+    T,
+    exists,
+    withdraw_from_sender,
+    deposit,
+]
+ByteArrays: [
+]
+Addresses: [
+    0x0,
+    0x111111111111111111111111111111111111011111111111111111111111110,
+]
+Function Definitions: [
+]
+public 0x0.<SELF>.main(): ()
+    max_stack_size: 7
+    locals: address, bool, struct resource T@0x0.LibraCoin, bool
+    LD_ADDR IdxAddress(1)              [0,1]
+    ST_LOC IdxLocal(0)                 [1,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    CALL IdxFuncHandle(1)              [1,1]
+    ST_LOC IdxLocal(1)                 [1,0]
+    LD_CONST ImmUint64(83)             [0,1]
+    MOVE_LOC IdxLocal(1)               [1,2]
+    NOT                                [2,2]
+    ASSERT                             [2,0]
+    LD_CONST ImmUint64(10)             [0,1]
+    CALL IdxFuncHandle(2)              [1,1]
+    ST_LOC IdxLocal(2)                 [1,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    CREATE_ACCOUNT                     [1,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    MOVE_LOC IdxLocal(2)               [1,2]
+    CALL IdxFuncHandle(3)              [2,0]
+    COPY_LOC IdxLocal(0)               [0,1]
+    CALL IdxFuncHandle(1)              [1,1]
+    ST_LOC IdxLocal(3)                 [1,0]
+    LD_CONST ImmUint64(84)             [0,1]
+    MOVE_LOC IdxLocal(3)               [1,2]
+    ASSERT                             [2,0]
+    RET                                [0,0]
+

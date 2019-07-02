@@ -1,0 +1,70 @@
+Module Handles: [
+    0x0.Math,
+]
+Struct Handles: [
+]
+Function Handles: [
+    0x0.Math.sum_(integer, integer): (integer),
+    0x0.Math.sum(integer): (integer),
+]
+Struct Definitions: [
+]
+Field Definitions: [
+]
+Type Signatures: [
+]
+Function Signatures: [
+    (integer, integer): (integer),
+    (integer): (integer),
+]
+Local Signatures: [
+    integer, integer, integer, integer, integer,
+    integer, integer,
+]
+Strings: [
+    Math,
+    sum_,
+    sum,
+]
+ByteArrays: [
+]
+Addresses: [
+    0x0,
+]
+Function Definitions: [
+    public 0x0.Math.sum_(integer, integer): (integer)
+        max_stack_size: 3
+        locals: integer, integer, integer, integer, integer
+        COPY_LOC IdxLocal(0)               [0,1]
+        LD_CONST ImmUint64(0)              [1,2]
+        EQ                                 [2,1]
+        BR_FALSE Branch(6)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        RET                                [1,0]
+        COPY_LOC IdxLocal(0)               [0,1]
+        LD_CONST ImmUint64(1)              [1,2]
+        SUB                                [2,1]
+        ST_LOC IdxLocal(2)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        MOVE_LOC IdxLocal(0)               [1,2]
+        ADD                                [2,1]
+        ST_LOC IdxLocal(3)                 [1,0]
+        MOVE_LOC IdxLocal(2)               [0,1]
+        MOVE_LOC IdxLocal(3)               [1,2]
+        CALL IdxFuncHandle(0)              [2,1]
+        ST_LOC IdxLocal(4)                 [1,0]
+        MOVE_LOC IdxLocal(4)               [0,1]
+        RET                                [1,0]
+    ,
+    public 0x0.Math.sum(integer): (integer)
+        max_stack_size: 2
+        locals: integer, integer
+        MOVE_LOC IdxLocal(0)               [0,1]
+        LD_CONST ImmUint64(0)              [1,2]
+        CALL IdxFuncHandle(0)              [2,1]
+        ST_LOC IdxLocal(1)                 [1,0]
+        MOVE_LOC IdxLocal(1)               [0,1]
+        RET                                [1,0]
+    ,
+]
+

@@ -1,0 +1,2 @@
+#!/bin/sh
+ant -f scripts/build.xml -DpluginClassname="com.pnf.libravm.LibraIdentifier com.pnf.libravm.LibraDisassemblerPlugin com.pnf.libravm.LibraDecompilerPlugin" -DpluginFilename=JebLibraPlugin -DpluginVersion=0.1.0
