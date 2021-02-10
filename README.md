@@ -1,17 +1,16 @@
-# Libra decompiler plugin for JEB
+# Diem decompiler plugin for JEB
 
-This set of plugins provide [Libra](https://github.com/libra/libra/) decompilation (libravm/Move) support for JEB Decompiler.
+This set of plugins provide [Diem](https://github.com/diem/diem/) (formerly named Libra) decompilation (diemvm/Move) support for JEB Decompiler.
 
 Required version: JEB 3.6-beta [(download)](https://www.pnfsoftware.com/dl?jebdemo)
 
 ## Usage
-- JEB 3.6-beta ships with the compiled plugin version 0.1.0
-- Open a compiled Libra module or script in JEB (they start with the <code>libravm</code> magic bytes)
+- Open a compiled Diem module or script in JEB (they start with the <code>diemvm</code> magic bytes)
 - JEB will start the analysis and behind-the-scene decompilation to restore the module
 - The disassembly will be displayed
 - In the code hierarchy view, select either the "main" or "Decompiled Module" node and hit the TAB key to display the decompiled code
 
-![A libravm module decompiled by JEB](libra-jeb-decomp-2-medium.png)
+![A diemvm module decompiled by JEB](diem-jeb-decomp-2-medium.png)
 
 ## Source
 
@@ -23,7 +22,7 @@ Make sure to define <code>JEB_HOME</code> environment variable and have it point
 
 ### Building
 - Run the appropriate <code>build-xxx</code> script 
-- Output goes to <code>out/JebLibraPlugin-VERSION.jar</code>; copy the file to your JEB <code>coreplugins/</code> folder
+- Output goes to <code>out/JebDiemPlugin-VERSION.jar</code>; copy the file to your JEB <code>coreplugins/</code> folder
 
 ## License
 ```

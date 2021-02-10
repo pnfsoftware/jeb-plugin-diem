@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -24,40 +24,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.pnf.libravm.Libra.SerializedType;
+import com.pnf.diemvm.Diem.SerializedType;
 import com.pnfsoftware.jeb.util.format.Formatter;
 import com.pnfsoftware.jeb.util.format.TextBuilder;
 import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Generic interface for Libra objects.
+ * Generic interface for Diem objects.
  *
  * @author Nicolas Falliere
  *
  */
-public interface LibraObject {
+public interface DiemObject {
 
     /**
-     * Format the Libra object.
+     * Format the Diem object.
      * 
-     * @param l libra unit
+     * @param u diem unit
      * @param t a buffer for output storage
      * @return the parameter t to allow call-chaining
      */
-    TextBuilder format(LibraUnit l, TextBuilder t);
+    TextBuilder format(DiemUnit u, TextBuilder t);
 }
 
 /**
  * Super type for {@code address}, {@code bytearray}, and {@code string} types.
  */
-abstract class AbstractDataEntry extends LibraPoolEntry {
+abstract class AbstractDataEntry extends DiemPoolEntry {
 
     abstract byte[] getBytes();
 }
 
 @Ser
-class ModuleHandle extends LibraPoolEntry {
+class ModuleHandle extends DiemPoolEntry {
     @SerId(1)
     private int address_index;
     @SerId(2)
@@ -68,20 +68,20 @@ class ModuleHandle extends LibraPoolEntry {
         this.name_index = name_index;
     }
 
-    public AddressEntry getAddress(LibraUnit l) {
+    public AddressEntry getAddress(DiemUnit l) {
         return l.addressPool.get(address_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         return l.stringPool.get(name_index).get();
     }
 
-    public String getFullName(LibraUnit l) {
+    public String getFullName(DiemUnit l) {
         return l.addressPool.get(address_index) + "." + l.stringPool.get(name_index).get();
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         l.addressPool.get(address_index).format(l, t);
         t.append(".");
         l.stringPool.get(name_index).format(l, t);
@@ -90,7 +90,7 @@ class ModuleHandle extends LibraPoolEntry {
 }
 
 @Ser
-class StructHandle extends LibraPoolEntry {
+class StructHandle extends DiemPoolEntry {
     @SerId(1)
     private int modulehandle_index;  // ModuleHandle
     @SerId(2)
@@ -108,15 +108,15 @@ class StructHandle extends LibraPoolEntry {
         return is_resource;
     }
 
-    public ModuleHandle getModule(LibraUnit l) {
+    public ModuleHandle getModule(DiemUnit l) {
         return l.moduleHandles.get(modulehandle_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         return l.stringPool.get(name_index).get();
     }
 
-    public String getFullName(LibraUnit l) {
+    public String getFullName(DiemUnit l) {
         String s = l.stringPool.get(name_index).get();
         s += "@";
         s += l.moduleHandles.get(modulehandle_index).getFullName(l);
@@ -124,7 +124,7 @@ class StructHandle extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         if(is_resource) {
             t.append("resource ");
         }
@@ -136,7 +136,7 @@ class StructHandle extends LibraPoolEntry {
 }
 
 @Ser
-class FunctionHandle extends LibraPoolEntry {
+class FunctionHandle extends DiemPoolEntry {
     @SerId(1)
     private int modulehandle_index;  // ModuleHandle
     @SerId(2)
@@ -150,16 +150,16 @@ class FunctionHandle extends LibraPoolEntry {
         this.signature_index = signature_index;
     }
 
-    public ModuleHandle getModule(LibraUnit l) {
+    public ModuleHandle getModule(DiemUnit l) {
         return l.moduleHandles.get(modulehandle_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         //return l.stringPool.get(name_index).get();
         return getFullName(l);
     }
 
-    private String getFullName(LibraUnit l) {
+    private String getFullName(DiemUnit l) {
         String fname = l.stringPool.get(name_index).get();
         String modname = l.moduleHandles.get(modulehandle_index).getName(l);
         if("<self>".equalsIgnoreCase(modname)) {
@@ -168,12 +168,12 @@ class FunctionHandle extends LibraPoolEntry {
         return modname + "_" + fname;
     }
 
-    public FunctionSignature getSignature(LibraUnit l) {
+    public FunctionSignature getSignature(DiemUnit l) {
         return l.functionSignatures.get(signature_index);
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         l.moduleHandles.get(modulehandle_index).format(l, t);
         t.append(".");
         l.stringPool.get(name_index).format(l, t);
@@ -257,7 +257,7 @@ class StringEntry extends AbstractDataEntry {
 }
 
 @Ser
-class TypeSignature extends LibraPoolEntry {
+class TypeSignature extends DiemPoolEntry {
     @SerId(1)
     private SignatureToken token;
 
@@ -273,13 +273,13 @@ class TypeSignature extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         return token.format(l, t);
     }
 }
 
 @Ser
-class FunctionSignature extends LibraPoolEntry {
+class FunctionSignature extends DiemPoolEntry {
     @SerId(1)
     private List<SignatureToken> returnTokens;
     @SerId(2)
@@ -304,7 +304,7 @@ class FunctionSignature extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         t.append("(");
         int i = 0;
         for(SignatureToken token: paramTokens) {
@@ -329,7 +329,7 @@ class FunctionSignature extends LibraPoolEntry {
 }
 
 @Ser
-class LocalSignature extends LibraPoolEntry {
+class LocalSignature extends DiemPoolEntry {
     @SerId(1)
     private List<SignatureToken> tokens;
 
@@ -347,7 +347,7 @@ class LocalSignature extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         int i = 0;
         for(SignatureToken token: tokens) {
             if(i > 0) {
@@ -361,7 +361,7 @@ class LocalSignature extends LibraPoolEntry {
 }
 
 @Ser
-class SignatureToken implements LibraObject {
+class SignatureToken implements DiemObject {
     public static final SignatureToken stUint64 = new SignatureToken(SerializedType.INTEGER);
     public static final SignatureToken stBool = new SignatureToken(SerializedType.BOOL);
     public static final SignatureToken stAddress = new SignatureToken(SerializedType.ADDRESS);
@@ -418,7 +418,7 @@ class SignatureToken implements LibraObject {
         return ref;
     }
 
-    public StructHandle getStructureHandle(LibraUnit l) {
+    public StructHandle getStructureHandle(DiemUnit l) {
         if(sh_index == null) {
             return null;
         }
@@ -438,7 +438,7 @@ class SignatureToken implements LibraObject {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         t.append(st);
         if(ref != null) {
             t.append(" ");
@@ -453,10 +453,10 @@ class SignatureToken implements LibraObject {
 }
 
 @Ser
-class FunctionDef extends LibraPoolEntry {
+class FunctionDef extends DiemPoolEntry {
     @SerId(1)
     private int function_handle_index;
-    /** flags: {@link Libra#PUBLIC}, {@link Libra#NATIVE} */
+    /** flags: {@link Diem#PUBLIC}, {@link Diem#NATIVE} */
     @SerId(2)
     private int flags;
     @SerId(3)
@@ -468,11 +468,11 @@ class FunctionDef extends LibraPoolEntry {
         this.code = code;
     }
 
-    public FunctionHandle getHandle(LibraUnit l) {
+    public FunctionHandle getHandle(DiemUnit l) {
         return l.functionHandles.get(function_handle_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         return getHandle(l).getName(l);
     }
 
@@ -485,9 +485,9 @@ class FunctionDef extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         if(flags != 0) {
-            t.append(Libra.formatFunctionFlags(flags)).append(" ");
+            t.append(Diem.formatFunctionFlags(flags)).append(" ");
         }
         l.functionHandles.get(function_handle_index).format(l, t);
         t.eol();
@@ -498,18 +498,18 @@ class FunctionDef extends LibraPoolEntry {
 }
 
 @Ser
-class CodeUnit implements LibraObject {
+class CodeUnit implements DiemObject {
     @SerId(1)
     private int max_stack_size;
     @SerId(2)
     private int local_sig_index;
     @SerId(3)
-    private List<LibraInstruction> insnlist;
+    private List<DiemInstruction> insnlist;
 
     @SerId(4)
     private int bytecode_offset;
 
-    public CodeUnit(int max_stack_size, int local_sig_index, List<LibraInstruction> insnlist) {
+    public CodeUnit(int max_stack_size, int local_sig_index, List<DiemInstruction> insnlist) {
         this.max_stack_size = max_stack_size;
         this.local_sig_index = local_sig_index;
         this.insnlist = insnlist;
@@ -519,18 +519,18 @@ class CodeUnit implements LibraObject {
         return max_stack_size;
     }
 
-    public LocalSignature getLocals(LibraUnit l) {
+    public LocalSignature getLocals(DiemUnit l) {
         return l.localSignatures.get(local_sig_index);
     }
 
-    public List<LibraInstruction> getInstructions() {
+    public List<DiemInstruction> getInstructions() {
         return insnlist;
     }
 
     /** instructions size in bytes */
     public int getInsnFileSize() {
         int size = 0;
-        for(LibraInstruction insn: insnlist) {
+        for(DiemInstruction insn: insnlist) {
             size += insn.getSize();
         }
         return size;
@@ -545,12 +545,12 @@ class CodeUnit implements LibraObject {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         t.append("max_stack_size: ").append(max_stack_size).eol();
         t.append("locals: ");
         l.localSignatures.get(local_sig_index).format(l, t).eol();
         int i = 0;
-        for(LibraInstruction insn: insnlist) {
+        for(DiemInstruction insn: insnlist) {
             t.append(insn.format((long)i)).eol();
             i++;
         }
@@ -559,7 +559,7 @@ class CodeUnit implements LibraObject {
 }
 
 @Ser
-class StructDef extends LibraPoolEntry {
+class StructDef extends DiemPoolEntry {
     @SerId(1)
     private int structhandle_index;
     @SerId(2)
@@ -578,11 +578,11 @@ class StructDef extends LibraPoolEntry {
         return structhandle_index;
     }
 
-    public StructHandle getHandle(LibraUnit l) {
+    public StructHandle getHandle(DiemUnit l) {
         return l.structHandles.get(structhandle_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         return getHandle(l).getName(l);
     }
 
@@ -590,7 +590,7 @@ class StructDef extends LibraPoolEntry {
         return field_count;
     }
 
-    public List<FieldDef> getFields(LibraUnit l) {
+    public List<FieldDef> getFields(DiemUnit l) {
         List<FieldDef> r = new ArrayList<>(field_count);
         for(int i = 0; i < field_count; i++) {
             r.add(l.fieldDefs.get(fields_index + i));
@@ -599,7 +599,7 @@ class StructDef extends LibraPoolEntry {
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         l.structHandles.get(structhandle_index).format(l, t);
         t.append(" { ");
         for(int i = 0; i < field_count; i++) {
@@ -614,7 +614,7 @@ class StructDef extends LibraPoolEntry {
 }
 
 @Ser
-class FieldDef extends LibraPoolEntry {
+class FieldDef extends DiemPoolEntry {
     /**
      * a back-reference to the structure using that field - so we have a 1-on-1 correspondence here
      */
@@ -631,20 +631,20 @@ class FieldDef extends LibraPoolEntry {
         this.signature_index = signature_index;
     }
 
-    public StructHandle getStructureHandle(LibraUnit l) {
+    public StructHandle getStructureHandle(DiemUnit l) {
         return l.structHandles.get(structhandle_index);
     }
 
-    public String getName(LibraUnit l) {
+    public String getName(DiemUnit l) {
         return l.stringPool.get(name_index).get();
     }
 
-    public TypeSignature getSignature(LibraUnit l) {
+    public TypeSignature getSignature(DiemUnit l) {
         return l.typeSignatures.get(signature_index);
     }
 
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         l.stringPool.get(name_index).format(l, t);
         t.append(": ");
         l.typeSignatures.get(signature_index).format(l, t);

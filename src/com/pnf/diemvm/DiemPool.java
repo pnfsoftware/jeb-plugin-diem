@@ -16,28 +16,28 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.units.Pool;
 import com.pnfsoftware.jeb.util.format.TextBuilder;
 import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 
 /**
- * Super class for pools containing indexed Libra objects.
+ * Super class for pools containing indexed Diem objects.
  *
  * @author Nicolas Falliere
  *
  * @param <T>
  */
 @Ser
-public class LibraPool<T extends LibraPoolEntry> extends Pool<T> implements LibraObject {
+public class DiemPool<T extends DiemPoolEntry> extends Pool<T> implements DiemObject {
 
-    public LibraPool(String poolname) {
+    public DiemPool(String poolname) {
         super(poolname);
     }
     
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         t.append("%s: [", getName()).indent(true);
         for(T e: this) {
             e.format(l, t);

@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
-import static com.pnf.libravm.Libra.*;
+import static com.pnf.diemvm.Diem.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,19 +59,19 @@ import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Parser for Libra modules and scripts. 
+ * Parser for Diem modules and scripts. 
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraUnit extends AbstractCodeObjectUnit {
-    private static final ILogger logger = GlobalLog.getLogger(LibraUnit.class);
+public class DiemUnit extends AbstractCodeObjectUnit {
+    private static final ILogger logger = GlobalLog.getLogger(DiemUnit.class);
 
     static final int ptrsize = 64;
     static final int ptrsizeInBytes = ptrsize / 8;
 
-    // arbitrary mapping addresses for Libra objects
+    // arbitrary mapping addresses for Diem objects
     private static final long phyDataBase = 0L;
     private static final String segData = ".data";
 
@@ -85,47 +85,47 @@ public class LibraUnit extends AbstractCodeObjectUnit {
     byte[] rawbytes;
 
     @SerId(2)
-    LibraBytecodeParser bytecodeParser;
+    DiemBytecodeParser bytecodeParser;
 
     @SerId(10)
-    LibraPool<ModuleHandle> moduleHandles = new LibraPool<>("Module Handles");
+    DiemPool<ModuleHandle> moduleHandles = new DiemPool<>("Module Handles");
     @SerId(11)
-    LibraPool<StructHandle> structHandles = new LibraPool<>("Struct Handles");
+    DiemPool<StructHandle> structHandles = new DiemPool<>("Struct Handles");
     @SerId(12)
-    LibraPool<FunctionHandle> functionHandles = new LibraPool<>("Function Handles");
+    DiemPool<FunctionHandle> functionHandles = new DiemPool<>("Function Handles");
     @SerId(13)
-    LibraPool<AddressEntry> addressPool = new LibraPool<>("Addresses");
+    DiemPool<AddressEntry> addressPool = new DiemPool<>("Addresses");
     @SerId(14)
-    LibraPool<BytearrayEntry> bytearrayPool = new LibraPool<>("ByteArrays");
+    DiemPool<BytearrayEntry> bytearrayPool = new DiemPool<>("ByteArrays");
     @SerId(15)
-    LibraPool<StringEntry> stringPool = new LibraPool<>("Strings");
+    DiemPool<StringEntry> stringPool = new DiemPool<>("Strings");
     @SerId(16)
-    LibraPool<TypeSignature> typeSignatures = new LibraPool<>("Type Signatures");
+    DiemPool<TypeSignature> typeSignatures = new DiemPool<>("Type Signatures");
     @SerId(17)
-    LibraPool<LocalSignature> localSignatures = new LibraPool<>("Local Signatures");
+    DiemPool<LocalSignature> localSignatures = new DiemPool<>("Local Signatures");
     @SerId(18)
-    LibraPool<FunctionSignature> functionSignatures = new LibraPool<>("Function Signatures");
+    DiemPool<FunctionSignature> functionSignatures = new DiemPool<>("Function Signatures");
     @SerId(19)
-    LibraPool<StructDef> structDefs = new LibraPool<>("Struct Definitions");  // for modules only
+    DiemPool<StructDef> structDefs = new DiemPool<>("Struct Definitions");  // for modules only
     @SerId(20)
-    LibraPool<FieldDef> fieldDefs = new LibraPool<>("Field Definitions");  // for modules only
+    DiemPool<FieldDef> fieldDefs = new DiemPool<>("Field Definitions");  // for modules only
     @SerId(21)
-    LibraPool<FunctionDef> functionDefs = new LibraPool<>("Function Definitions");  // for modules only
+    DiemPool<FunctionDef> functionDefs = new DiemPool<>("Function Definitions");  // for modules only
     @SerId(22)
     FunctionDef main;  // for scripts only
 
-    public LibraUnit(String name, IInput input, IUnitProcessor unitProcessor, IUnitCreator parent,
+    public DiemUnit(String name, IInput input, IUnitProcessor unitProcessor, IUnitCreator parent,
             IPropertyDefinitionManager pdm) {
-        super(input, LibraIdentifier.TYPE, name, unitProcessor, parent, pdm);
+        super(input, DiemIdentifier.TYPE, name, unitProcessor, parent, pdm);
     }
 
-    public LibraBytecodeParser getBytecodeParser() {
+    public DiemBytecodeParser getBytecodeParser() {
         return bytecodeParser;
     }
 
     @Override
     protected boolean processInternal() {
-        bytecodeParser = new LibraBytecodeParser(this);
+        bytecodeParser = new DiemBytecodeParser(this);
 
         try(InputStream in = getInput().getStream()) {
             rawbytes = IO.readInputStream(in);
@@ -190,7 +190,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
             // imported functions, represented as unknown pointers
             for(FunctionHandle e: getExternalFunctionHandles()) {
                 e.mappedAddress = currentAddress;
-                //e.mappedSize = Libra.getValueTypeSize(e.type.content_type);
+                //e.mappedSize = Diem.getValueTypeSize(e.type.content_type);
                 SymbolInformation symbol = new SymbolInformation(SymbolType.PTRFUNCTION,
                         ISymbolInformation.FLAG_IMPORTED, e.getIndex(), e.getName(this), 0, currentAddress,
                         ptrsizeInBytes);
@@ -219,7 +219,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
 
             // inform JEB generic parser to go ahead and process the bytecode
             try {
-                String t = LibraDisassemblerPlugin.TYPE;
+                String t = DiemDisassemblerPlugin.TYPE;
                 IUnit img = getUnitProcessor().process(t + " image", getInput(), this, t, true);
                 if(img != null) {
                     addChildUnit(img);
@@ -449,7 +449,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
         logger.i("==> Parsing bytecode at 0x%X: fh=%d, mss=%d, sig=%d, insncnt=%d", bytecode_offset,
                 function_handle_index, max_stack_size, locals_index, insncnt);
 
-        List<LibraInstruction> insnlist;
+        List<DiemInstruction> insnlist;
         try {
             insnlist = bytecodeParser.parseFunction(function_handle_index, insncnt, bytecode_offset, ba.maxPosition());
         }
@@ -498,7 +498,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
     public List<FunctionDef> getInternalFunctions() {
         if(main != null) {
             // TODO: could be done before after processing the tables 
-            Assert.a(functionDefs.isEmpty(), "Libra script cannot contain functions defs aside from main()");
+            Assert.a(functionDefs.isEmpty(), "Diem script cannot contain functions defs aside from main()");
             return Arrays.asList(main);
         }
         return functionDefs.getAll();
@@ -648,7 +648,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
         return t.toString();
     }
 
-    String formatObject(LibraObject o) {
+    String formatObject(DiemObject o) {
         TextBuilder t = new TextBuilder();
         return o.format(this, t).toString();
     }
@@ -658,7 +658,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
         StringBuilder sb = new StringBuilder();
         //sb.append(super.getDescription());
         try {
-            //sb.append("\n\nLibra tables:\n");
+            //sb.append("\n\nDiem tables:\n");
             sb.append(formatTables());
         }
         catch(Exception e) {
@@ -671,7 +671,7 @@ public class LibraUnit extends AbstractCodeObjectUnit {
     @Override
     public byte[] getIconData() {
         try {
-            return IO.readInputStream(getClass().getResourceAsStream("libra_icon.png"));
+            return IO.readInputStream(getClass().getResourceAsStream("diem_icon.png"));
         }
         catch(IOException e) {
             return null;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.units.code.asm.analyzer.AbstractAnalyzerExtension;
 import com.pnfsoftware.jeb.core.units.code.asm.type.IPrimitiveTypeManager;
@@ -26,15 +26,15 @@ import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 
 /**
  * Code analyzer extension. This extension is used by JEB's disassembler to customize the analysis.
- * Currently, it is used to register specific Move types not present in common typelibs.
+ * Currently, it is used to register specific {@code Move} types not present in common typelibs.
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraAnalyzerExtension extends AbstractAnalyzerExtension<LibraInstruction> {
+public class DiemAnalyzerExtension extends AbstractAnalyzerExtension<DiemInstruction> {
 
-    /** Register libra specific types */
+    /** Register diem specific types */
     @Override
     public void typeManagerInitialized(ITypeManager typeman) {
 
@@ -42,9 +42,9 @@ public class LibraAnalyzerExtension extends AbstractAnalyzerExtension<LibraInstr
         // the other types will be managed via pointers (bytearray, string, struct, references)
 
         IPrimitiveTypeManager pman = typeman.getPrimitives();
-        pman.addPrimitive("bool", 8, PrimitiveCategory.INTEGER, false);
-        pman.addPrimitive("u64", 8, PrimitiveCategory.INTEGER, false);
-        pman.addPrimitive("address", 32, PrimitiveCategory.INTEGER, false);
+        pman.addPrimitive("bool", 8, PrimitiveCategory.UNSIGNED);
+        pman.addPrimitive("u64", 8, PrimitiveCategory.UNSIGNED);
+        pman.addPrimitive("address", 32, PrimitiveCategory.UNSIGNED);
 
         typeman.createAlias("byte", typeman.getType("unsigned char"));
         typeman.createAlias("bytearray", typeman.getType("byte*"));

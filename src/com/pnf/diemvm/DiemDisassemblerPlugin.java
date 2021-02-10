@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.IPluginInformation;
 import com.pnfsoftware.jeb.core.IUnitCreator;
@@ -30,52 +30,52 @@ import com.pnfsoftware.jeb.core.units.code.asm.render.GenericCodeFormatter;
 import com.pnfsoftware.jeb.util.io.Endianness;
 
 /**
- * Libra public plugin #2/3: disassembler.
+ * Diem public plugin #2/3: disassembler.
  * 
  * @author Nicolas Falliere
  *
  */
-public class LibraDisassemblerPlugin extends AbstractNativeDisassemblerPlugin<LibraInstruction> {
-    public static final String TYPE = LibraIdentifier.TYPE + "_bc";
+public class DiemDisassemblerPlugin extends AbstractNativeDisassemblerPlugin<DiemInstruction> {
+    public static final String TYPE = DiemIdentifier.TYPE + "_bc";
 
-    public LibraDisassemblerPlugin() {
+    public DiemDisassemblerPlugin() {
         super(TYPE, 0);
     }
 
     @Override
     public IPluginInformation getPluginInformation() {
-        return new PluginInformation("Libra Disassembler", "Libra bytecode (Move) disassembler", "PNF Software",
-                LibraIdentifier.VERSION);
+        return new PluginInformation("Diem Disassembler", "Diem bytecode (Move) disassembler", "PNF Software",
+                DiemIdentifier.VERSION);
     }
 
     @Override
     public boolean canBeProcessedOutsideCodeObject() {
-        // parsing libra code outside a libra module would not make any sense
+        // parsing diem code outside a diem module would not make any sense
         return false;
     }
 
     @Override
-    public IProcessor<LibraInstruction> getProcessor(IUnitCreator parent) {
-        if(parent instanceof LibraUnit) {
-            return ((LibraUnit)parent).getBytecodeParser();
+    public IProcessor<DiemInstruction> getProcessor(IUnitCreator parent) {
+        if(parent instanceof DiemUnit) {
+            return ((DiemUnit)parent).getBytecodeParser();
         }
-        return new LibraBytecodeParser();
+        return new DiemBytecodeParser();
     }
 
     @Override
     public IVirtualMemory getMemory(IUnitCreator parent) {
-        // provide a standard 64-bit VM, we will map Libra objects onto it
-        return VirtualMemoryUtil.createMemory(LibraUnit.ptrsize, 12, Endianness.LITTLE_ENDIAN);
+        // provide a standard 64-bit VM, we will map Diem objects onto it
+        return VirtualMemoryUtil.createMemory(DiemUnit.ptrsize, 12, Endianness.LITTLE_ENDIAN);
     }
 
     @Override
-    public GenericCodeFormatter<LibraInstruction> getCodeFormatter() {
+    public GenericCodeFormatter<DiemInstruction> getCodeFormatter() {
         // custom disassembly formatting
-        return new LibraCodeFormatter();
+        return new DiemCodeFormatter();
     }
 
     @Override
-    public INativeCodeAnalyzerExtension<LibraInstruction> getAnalyzerExtension() {
-        return new LibraAnalyzerExtension();
+    public INativeCodeAnalyzerExtension<DiemInstruction> getAnalyzerExtension() {
+        return new DiemAnalyzerExtension();
     }
 }

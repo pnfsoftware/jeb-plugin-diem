@@ -16,33 +16,36 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-import com.pnf.libravm.Libra.OpcodeDef;
+import com.pnf.diemvm.Diem.OpcodeDef;
 import com.pnfsoftware.jeb.core.units.code.EntryPointDescription;
 import com.pnfsoftware.jeb.core.units.code.FlowInformation;
 import com.pnfsoftware.jeb.core.units.code.IFlowInformation;
 import com.pnfsoftware.jeb.core.units.code.IInstruction;
+import com.pnfsoftware.jeb.core.units.code.InstructionFlags;
 import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Representation of a Libra instruction. 
+ * Representation of a Diem instruction. 
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraInstruction implements IInstruction {
+public class DiemInstruction implements IInstruction {
     @SerId(1)
     OpcodeDef opdef;
     @SerId(2)
     byte[] code;
     /** 0 or 1 immediate operands; most operands of a an instruction are pushed on the operand stack */
     @SerId(3)
-    LibraInstructionOperand[] opnds;
+    DiemInstructionOperand[] opnds;
 
     @SerId(4)
     int preExecStackDelta;
@@ -55,7 +58,7 @@ public class LibraInstruction implements IInstruction {
     @SerId(8)
     int targetDelta;  // for branch instructions
 
-    public LibraInstruction(Libra.OpcodeDef opdef) {
+    public DiemInstruction(Diem.OpcodeDef opdef) {
         this.opdef = opdef;
     }
 
@@ -65,7 +68,7 @@ public class LibraInstruction implements IInstruction {
 
     @Override
     public int getProcessorMode() {
-        return LibraUnit.ptrsize;
+        return DiemUnit.ptrsize;
     }
 
     @Override
@@ -84,7 +87,7 @@ public class LibraInstruction implements IInstruction {
     }
 
     @Override
-    public LibraInstructionOperand[] getOperands() {
+    public DiemInstructionOperand[] getOperands() {
         return opnds;
     }
 
@@ -106,7 +109,7 @@ public class LibraInstruction implements IInstruction {
         if(opdef == OpcodeDef.RET) {
             return new FlowInformation();
         }
-        // remember that those libravm instructions store the absolute (within a routine) index of the target instruction
+        // remember that those diemvm instructions store the absolute (within a routine) index of the target instruction
         // as the immediate operand of the branch instruction; the target is _not_ a relative offset or similar
         if(opdef == OpcodeDef.BR_TRUE || opdef == OpcodeDef.BR_FALSE || opdef == OpcodeDef.BRANCH) {
             FlowInformation f = new FlowInformation();
@@ -148,8 +151,8 @@ public class LibraInstruction implements IInstruction {
     }
 
     @Override
-    public boolean isConditional() {
-        return false;
+    public Set<InstructionFlags> getInstructionFlags() {
+        return Collections.emptySet();
     }
 
     @Override

@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
-import com.pnf.libravm.Libra.OpndType;
+import com.pnf.diemvm.Diem.OpndType;
 import com.pnfsoftware.jeb.core.units.code.IInstruction;
 import com.pnfsoftware.jeb.core.units.code.IInstructionOperand;
 import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Representation of a Libra instruction inline operand (non-stack).
+ * Representation of a Diem instruction inline operand (non-stack).
  * <p>
  * Those are either branch targets, uint64 immediates, or indices into various object pools.
  *
@@ -33,13 +33,13 @@ import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
  *
  */
 @Ser
-public class LibraInstructionOperand implements IInstructionOperand {
+public class DiemInstructionOperand implements IInstructionOperand {
     @SerId(1)
     private OpndType type;
     @SerId(2)
     private Object object;
 
-    public LibraInstructionOperand(OpndType type, Object object) {
+    public DiemInstructionOperand(OpndType type, Object object) {
         this.type = type;
         this.object = object;
     }

@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.util.base.Assert;
 
 /**
- * A collection of Libra enumerations, including Move opcode definitions.  
+ * A collection of Diem enumerations, including Move opcode definitions.  
  *
  * @author Nicolas Falliere
  *
  */
-public class Libra {
+public class Diem {
     //@formatter:off
 
     public static final int ADDRESS_LENGTH = 0x20;
@@ -44,13 +44,13 @@ public class Libra {
     public static String formatFunctionFlags(int flags) {
         String s = "";
         while(flags != 0) {
-            if((flags & Libra.PUBLIC) != 0) {
+            if((flags & Diem.PUBLIC) != 0) {
                 s += "public ";
-                flags &= ~Libra.PUBLIC;
+                flags &= ~Diem.PUBLIC;
             }
-            else if((flags & Libra.NATIVE) != 0) {
+            else if((flags & Diem.NATIVE) != 0) {
                 s += "native ";
-                flags &= ~Libra.NATIVE;
+                flags &= ~Diem.NATIVE;
             }
             else {
                 s += String.format("(0x%X) ", flags);
@@ -224,7 +224,7 @@ public class Libra {
         DIV                        (0x1A, 2, 1),
         BIT_OR                     (0x1B, 2, 1),
         BIT_AND                    (0x1C, 2, 1),
-        XOR                        (0x1D, 2, 1),  // also bitwise - libra's opcode naming is really not ideal here, but I assume that will be polished over the next months
+        XOR                        (0x1D, 2, 1),  // also bitwise - diem's opcode naming is really not ideal here, but I assume that will be polished over the next months
         OR                         (0x1E, 2, 1),  // logical operations, all the way to GE 
         AND                        (0x1F, 2, 1),
         NOT                        (0x20, 1, 1),

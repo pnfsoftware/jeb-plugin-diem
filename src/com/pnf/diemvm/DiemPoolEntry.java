@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.units.PoolEntry;
 import com.pnfsoftware.jeb.util.format.TextBuilder;
@@ -24,13 +24,13 @@ import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Super class for all Libra objects stored in indexed pools.
+ * Super class for all Diem objects stored in indexed pools.
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public abstract class LibraPoolEntry extends PoolEntry implements LibraObject {
+public abstract class DiemPoolEntry extends PoolEntry implements DiemObject {
     @SerId(1)
     int fileOffset;
     @SerId(2)
@@ -40,7 +40,7 @@ public abstract class LibraPoolEntry extends PoolEntry implements LibraObject {
     @SerId(4)
     int mappedSize;
 
-    public LibraPoolEntry() {
+    public DiemPoolEntry() {
     }
 
     public void setFilePosition(int offset, int size) {
@@ -54,7 +54,7 @@ public abstract class LibraPoolEntry extends PoolEntry implements LibraObject {
     }
     
     @Override
-    public TextBuilder format(LibraUnit l, TextBuilder t) {
+    public TextBuilder format(DiemUnit l, TextBuilder t) {
         return t.append(toString());
     }
 }

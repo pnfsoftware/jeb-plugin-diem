@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
-import static com.pnf.libravm.Libra.*;
+import static com.pnf.diemvm.Diem.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,44 +36,44 @@ import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 
 /**
- * Libra bytecode parser.
+ * Diem bytecode parser.
  * <p>
- * Note that, unlike what native code plugins would do, this parser is used by the {@link LibraUnit}
+ * Note that, unlike what native code plugins would do, this parser is used by the {@link DiemUnit}
  * components (~ ELF, PE) to pre-parse methods, instead of really letting JEB native code analysis
  * pipeline use it when it sees fit. That is because we are dealing with managed code, whose method
- * instructions and boundaries are well-defined and reference other Libra pool items by indices,
+ * instructions and boundaries are well-defined and reference other Diem pool items by indices,
  * which the generic pipeline has no clue about. By parsing earlier in the pipeline process, we can
- * construct an adequate representation of the libra module. Note that this design pattern of early
+ * construct an adequate representation of the diem module. Note that this design pattern of early
  * processing is common to all managed bytecodes (I designed the Ethereum and WebAssembly modules
  * similarly).
  * <p>
- * Ref: {@link https://github.com/libra/libra/blob/master/language/vm/src/file_format.rs#L556}
+ * Ref: {@link https://github.com/diem/diem/blob/master/language/vm/src/file_format.rs}
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
-    private static final ILogger logger = GlobalLog.getLogger(LibraBytecodeParser.class);
+public class DiemBytecodeParser extends AbstractProcessor<DiemInstruction> {
+    private static final ILogger logger = GlobalLog.getLogger(DiemBytecodeParser.class);
 
     @SerId(1)
-    LibraUnit unit;
+    DiemUnit unit;
 
-    public LibraBytecodeParser() {
+    public DiemBytecodeParser() {
         this(null);
     }
 
-    public LibraBytecodeParser(LibraUnit unit) {
-        super(1, LibraUnit.ptrsize, Endianness.LITTLE_ENDIAN, 1);
+    public DiemBytecodeParser(DiemUnit unit) {
+        super(1, DiemUnit.ptrsize, Endianness.LITTLE_ENDIAN, 1);
         this.unit = unit;
     }
 
     /**
      * Parse and perform trivial stack analysis of a method.
      * <p>
-     * Not an {@link IProcessor} method. Usage restricted to {@link LibraUnit}.
+     * Not an {@link IProcessor} method. Usage restricted to {@link DiemUnit}.
      */
-    public List<LibraInstruction> parseFunction(int fh_index, int insncnt, int offset, int endOffset)
+    public List<DiemInstruction> parseFunction(int fh_index, int insncnt, int offset, int endOffset)
             throws ProcessorException {
         if(unit == null) {
             throw new IllegalStateException("Reserved usage");
@@ -84,12 +84,12 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
         logger.i("=> Function: %s (fh=%d): in=%d, out=%d", unit.getFunctionName(fh_index), fh_index, insize, outsize);
 
         final int start = offset;
-        List<LibraInstruction> insnlist = new ArrayList<>(insncnt);
+        List<DiemInstruction> insnlist = new ArrayList<>(insncnt);
         List<Integer> branchInstructionsIndices = new ArrayList<>();
         int stkdelta = 0;
 
         for(int i = 0; i < insncnt; i++) {
-            LibraInstruction insn = parseAt(unit.rawbytes, offset, endOffset);
+            DiemInstruction insn = parseAt(unit.rawbytes, offset, endOffset);
             insn.preExecStackDelta = stkdelta;
             insn.indexInFunction = i;
             insn.offsetInFunction = offset - start;
@@ -160,16 +160,16 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
         }
 
         // post-process branch instructions: determine the jump deltas
-        // (libra branch instructions specify an instruction index (within the function) as the target;
+        // (diem branch instructions specify an instruction index (within the function) as the target;
         // JEB's IFlowInformation requires absolute memory address)
         for(int i: branchInstructionsIndices) {
-            LibraInstruction insn = insnlist.get(i);
+            DiemInstruction insn = insnlist.get(i);
             int targetInstructionIndex = (int)insn.getOperands()[0].getObject();
             insn.targetDelta = insnlist.get(targetInstructionIndex).offsetInFunction - insn.offsetInFunction;
         }
 
         // TODO: stack consistency: verify that SP-deltas pre-exec on block entries are consistent with SP-deltas post-exec at exit of incoming blocks
-        // also check whether of not the libra verifier performs this check already 
+        // also check whether of not the diem verifier performs this check already 
         return insnlist;
     }
 
@@ -178,7 +178,7 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
      * the instruction and return it directly.
      */
     @Override
-    public LibraInstruction parseAt(IVirtualMemory vm, long address) throws ProcessorException {
+    public DiemInstruction parseAt(IVirtualMemory vm, long address) throws ProcessorException {
         if(unit == null) {
             throw new IllegalStateException("Reserved usage");
         }
@@ -187,7 +187,7 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
             if(address >= e.mappedAddress && address < (e.mappedAddress + e.mappedSize)) {
                 int wantedOffset = (int)(address - e.mappedAddress);
                 int currentOffset = 0;
-                for(LibraInstruction insn: e.getCode().getInstructions()) {
+                for(DiemInstruction insn: e.getCode().getInstructions()) {
                     if(currentOffset == wantedOffset) {
                         return insn;
                     }
@@ -200,13 +200,13 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
     }
 
     @Override
-    protected LibraInstruction parseAtInternal(byte[] bytes, final int index, final int end) throws ProcessorException {
+    protected DiemInstruction parseAtInternal(byte[] bytes, final int index, final int end) throws ProcessorException {
         ByteArray ba = new ByteArray(bytes, index);
         int b = ba.u8();
         OpcodeDef opdef = OpcodeDef.fromValue(b);
 
-        LibraInstruction insn = new LibraInstruction(opdef);
-        LibraInstructionOperand opnd = null;
+        DiemInstruction insn = new DiemInstruction(opdef);
+        DiemInstructionOperand opnd = null;
 
         OpndType opndtype = opdef.getOperandType();
         switch(opndtype) {
@@ -214,16 +214,16 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
             break;
         case Branch:
             int target = ba.u16();
-            opnd = new LibraInstructionOperand(opndtype, target);
+            opnd = new DiemInstructionOperand(opndtype, target);
             break;
         case ImmUint64:
             long cst = ba.i64();  // NOTE: reading as signed (Java), although should be u64
-            opnd = new LibraInstructionOperand(opndtype, cst);
+            opnd = new DiemInstructionOperand(opndtype, cst);
             break;
 
         case IdxLocal:
-            int local_index = ba.u8();  // WATCH OUT! u8, not varu16! (and that means no more than 256 locals per libra object)
-            opnd = new LibraInstructionOperand(opndtype, local_index);
+            int local_index = ba.u8();  // WATCH OUT! u8, not varu16! (and that means no more than 256 locals per diem object)
+            opnd = new DiemInstructionOperand(opndtype, local_index);
             break;
         case IdxAddress:
         case IdxByteArray:
@@ -232,7 +232,7 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
         case IdxFieldDef:
         case IdxStructDef:
             int idx = ba.varu16();
-            opnd = new LibraInstructionOperand(opndtype, idx);
+            opnd = new DiemInstructionOperand(opndtype, idx);
             break;
         default:
             throw new RuntimeException("Unsupported operand type " + opndtype + " (used by opcode " + opdef + " )");
@@ -240,10 +240,10 @@ public class LibraBytecodeParser extends AbstractProcessor<LibraInstruction> {
 
         insn.code = Arrays.copyOfRange(bytes, index, ba.position());
         if(opnd == null) {
-            insn.opnds = new LibraInstructionOperand[]{};
+            insn.opnds = new DiemInstructionOperand[]{};
         }
         else {
-            insn.opnds = new LibraInstructionOperand[]{opnd};
+            insn.opnds = new DiemInstructionOperand[]{opnd};
         }
         return insn;
     }

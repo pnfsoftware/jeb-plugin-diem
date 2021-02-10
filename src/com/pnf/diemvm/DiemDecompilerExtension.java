@@ -16,34 +16,33 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
-import com.pnf.libravm.Libra.OpcodeDef;
+import com.pnf.diemvm.Diem.OpcodeDef;
 import com.pnfsoftware.jeb.core.units.code.asm.ChainedOperationResult;
 import com.pnfsoftware.jeb.core.units.code.asm.cfg.CFG;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.AbstractNativeDecompilerExtension;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilationTarget;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerUnit;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IDecompiledMethod;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IDecompilerManager;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEUntranslatedInstruction;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.opt.EMasterOptimizer;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.opt.IOptFilterCanDiscard;
-import com.pnfsoftware.jeb.core.units.code.asm.type.IWildcardType;
-import com.pnfsoftware.jeb.core.units.code.asm.type.IWildcardTypeManager;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IWildcardType;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IWildcardTypeManager;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.opt.IEMasterOptimizer;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.opt.IEOptFilterCanDiscard;
 
 /**
- * Primary decompiler extension, methods are guaranteed to be executed in a Libra context.
+ * Primary decompiler extension, methods are guaranteed to be executed in a Diem context.
  * 
  * @author Nicolas Falliere
  *
  */
-public class LibraDecompilerExtension extends AbstractNativeDecompilerExtension {
+public class DiemDecompilerExtension extends AbstractNativeDecompilerExtension {
 
     @Override
-    public ChainedOperationResult<Boolean> customizeIntermediateOptimizer(INativeDecompilerUnit<?> decompiler,
-            EMasterOptimizer optimizer) {
-
-        optimizer.addDisregardedOutputFilter(new IOptFilterCanDiscard() {
+    public ChainedOperationResult<Boolean> customizeIntermediateOptimizer(IDecompilerManager decompiler,
+            IEMasterOptimizer mo) {
+        mo.addDisregardedOutputFilter(new IEOptFilterCanDiscard() {
             @Override
             public boolean check(CFG<IEStatement> cfg, long insnAddress, int regDef) {
                 // routine-context variables can always be discarded if they reach a RET
@@ -55,11 +54,11 @@ public class LibraDecompilerExtension extends AbstractNativeDecompilerExtension 
     }
 
     @Override
-    public ChainedOperationResult<Boolean> applyAdditionalTypes(INativeDecompilationTarget target,
+    public ChainedOperationResult<Boolean> applyAdditionalTypes(IDecompiledMethod target,
             CFG<IEStatement> cfg) {
 
-        // create/retrieve wildcard types equivalent of the custom pseudo-native libra types (that were created by the analyzer extension)
-        IWildcardTypeManager etypeman = target.getDecompiler().getWildcardTypeManager();
+        // create/retrieve wildcard types equivalent of the custom pseudo-native diem types (that were created by the analyzer extension)
+        IWildcardTypeManager etypeman = target.getDecompiler().getIntermediateContext().getWildcardTypeManager();
         IWildcardType tBool = etypeman.create("bool");
         IWildcardType tAddress = etypeman.create("address");
 
@@ -73,7 +72,7 @@ public class LibraDecompilerExtension extends AbstractNativeDecompilerExtension 
                         u.getParameterExpression(1).setType(tBool);
                         break;
                     case GET_TXN_SENDER:
-                        u.getResultExpression().setType(tAddress);
+                        u.getReturnExpression().setType(tAddress);
                         break;
                     default:
                         ;

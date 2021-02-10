@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.IPluginInformation;
 import com.pnfsoftware.jeb.core.PluginInformation;
@@ -32,22 +32,22 @@ import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ISourceCustomizer;
 
 /**
- * Libra public plugin #3/3: decompiler.
+ * Diem public plugin #3/3: decompiler.
  *
  * @author Nicolas Falliere
  *
  */
-public class LibraDecompilerPlugin extends AbstractNativeDecompilerPlugin<LibraInstruction> {
-    public static final String TYPE = WellKnownUnitTypes.pfxTypeDecompiler + LibraDisassemblerPlugin.TYPE;
+public class DiemDecompilerPlugin extends AbstractNativeDecompilerPlugin<DiemInstruction> {
+    public static final String TYPE = WellKnownUnitTypes.pfxTypeDecompiler + DiemDisassemblerPlugin.TYPE;
 
-    public LibraDecompilerPlugin() {
+    public DiemDecompilerPlugin() {
         super(TYPE, 0);
     }
 
     @Override
     public IPluginInformation getPluginInformation() {
-        return new PluginInformation("Libra Decompiler", "Libra bytecode decompiler", "PNF Software",
-                LibraIdentifier.VERSION);
+        return new PluginInformation("Diem Decompiler", "Diem bytecode decompiler", "PNF Software",
+                DiemIdentifier.VERSION);
     }
 
     @Override
@@ -57,23 +57,23 @@ public class LibraDecompilerPlugin extends AbstractNativeDecompilerPlugin<LibraI
     }
 
     @Override
-    public IEConverter<LibraInstruction> getConverter(INativeCodeUnit<LibraInstruction> unit) {
-        LibraUnit libra = (LibraUnit)unit.getParent();
-        return new LibraConverter(libra, unit);
+    public IEConverter<DiemInstruction> getConverter(INativeCodeUnit<DiemInstruction> unit) {
+        DiemUnit diem = (DiemUnit)unit.getParent();
+        return new DiemConverter(diem, unit);
     }
 
     @Override
-    public INativeDecompilerExtension getPrimaryExtension(INativeDecompilerUnit<LibraInstruction> decompiler) {
-        return new LibraDecompilerExtension();
+    public INativeDecompilerExtension getPrimaryExtension(INativeDecompilerUnit<DiemInstruction> decompiler) {
+        return new DiemDecompilerExtension();
     }
 
     @Override
-    public IGlobalAnalyzer getGlobalAnalyzer(INativeDecompilerUnit<LibraInstruction> decompiler) {
-        return new LibraModuleRebuilder(decompiler);
+    public IGlobalAnalyzer getGlobalAnalyzer(INativeDecompilerUnit<DiemInstruction> decompiler) {
+        return new DiemModuleRebuilder(decompiler);
     }
     
     @Override
-    public ISourceCustomizer getSourceCustomizer(INativeDecompilerUnit<LibraInstruction> decompiler) {
-        return new LibraSourceCustomizer(decompiler);
+    public ISourceCustomizer getSourceCustomizer(INativeDecompilerUnit<DiemInstruction> decompiler) {
+        return new DiemSourceCustomizer(decompiler);
     }
 }

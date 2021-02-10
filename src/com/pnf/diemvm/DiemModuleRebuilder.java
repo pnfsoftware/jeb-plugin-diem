@@ -16,47 +16,48 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import java.util.List;
 
-import com.pnf.libravm.Libra.BinaryType;
+import com.pnf.diemvm.Diem.BinaryType;
 import com.pnfsoftware.jeb.core.units.INativeCodeUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IGlobalAnalyzer;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilationTarget;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IDecompiledMethod;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.NativeDecompilationStage;
 import com.pnfsoftware.jeb.core.units.code.asm.items.INativeClassItem;
 import com.pnfsoftware.jeb.core.units.code.asm.items.INativeMethodItem;
 import com.pnfsoftware.jeb.core.units.code.asm.type.IClassManager;
 import com.pnfsoftware.jeb.core.units.code.asm.type.IClassType;
+import com.pnfsoftware.jeb.core.units.code.asm.type.IPackageManager;
 import com.pnfsoftware.jeb.core.units.code.asm.type.ITypeManager;
 import com.pnfsoftware.jeb.util.concurrent.ACLock;
 import com.pnfsoftware.jeb.util.logging.GlobalLog;
 import com.pnfsoftware.jeb.util.logging.ILogger;
 
 /**
- * Simple libra module rebuilder. Will generate a class item.
+ * Simple Diem module rebuilder. Will generate a class item.
  *
  * @author Nicolas Falliere
  *
  */
-public class LibraModuleRebuilder implements IGlobalAnalyzer {
-    private static final ILogger logger = GlobalLog.getLogger(LibraModuleRebuilder.class);
+public class DiemModuleRebuilder implements IGlobalAnalyzer {
+    private static final ILogger logger = GlobalLog.getLogger(DiemModuleRebuilder.class);
 
     public static final String StandardModuleName = "DecompiledModule";
     
-    LibraUnit libra;
-    INativeCodeUnit<LibraInstruction> code;
-    INativeDecompilerUnit<LibraInstruction> decomp;
+    DiemUnit unit;
+    INativeCodeUnit<DiemInstruction> code;
+    INativeDecompilerUnit<DiemInstruction> decomp;
 
     private INativeClassItem classItem;
 
     @SuppressWarnings("unchecked")
-    public LibraModuleRebuilder(INativeDecompilerUnit<LibraInstruction> decomp) {
+    public DiemModuleRebuilder(INativeDecompilerUnit<DiemInstruction> decomp) {
         this.decomp = decomp;
-        this.code = (INativeCodeUnit<LibraInstruction>)decomp.getParent();
-        this.libra = (LibraUnit)code.getParent();
+        this.code = (INativeCodeUnit<DiemInstruction>)decomp.getParent();
+        this.unit = (DiemUnit)code.getParent();
     }
 
     public INativeClassItem getRebuiltModule() {
@@ -66,12 +67,12 @@ public class LibraModuleRebuilder implements IGlobalAnalyzer {
     @Override
     public boolean perform() {
         // nothing to rebuild if we are dealing with a script (single main function)
-        if(libra.getBinaryType() == BinaryType.SCRIPT) {
+        if(unit.getBinaryType() == BinaryType.SCRIPT) {
             return true;
         }
 
         // expect a module
-        if(libra.getBinaryType() != BinaryType.MODULE) {
+        if(unit.getBinaryType() != BinaryType.MODULE) {
             return false;
         }
 
@@ -87,6 +88,7 @@ public class LibraModuleRebuilder implements IGlobalAnalyzer {
     void rebuildModule() {
         ITypeManager typeman = code.getTypeManager();
         IClassManager classman = code.getClassManager();
+        IPackageManager pman = code.getPackageManager();
 
         // 1) decompile all routines
         List<? extends INativeMethodItem> routines = code.getInternalMethods();
@@ -98,32 +100,28 @@ public class LibraModuleRebuilder implements IGlobalAnalyzer {
         String classname = StandardModuleName;
         IClassType classType = typeman.createClassType(classname, 1, 0);
         // create a class item (~ the class type implementation) - class items are displayed in the code hierarchy)
-        classItem = classman.createClassItem(classType);
+        classItem = classman.createClass(classType);
         typeman.completeClassTypeInitialization(classType);
 
         // 3) add all internal routines to the class item
         for(INativeMethodItem routine: routines) {
             classman.addNonVirtualMethod(classItem, routine);
         }
-        classman.completeClassItemInitialization(classItem);
+        classman.completeClassInitialization(classItem);
 
         // 4) move all methods items to the class items
         for(INativeMethodItem routine: routines) {
-            classman.move(routine, classItem);
+            pman.moveToClass(routine, classItem);
         }
     }
 
-    INativeDecompilationTarget decompile(INativeMethodItem routine, NativeDecompilationStage stage) {
+    IDecompiledMethod decompile(INativeMethodItem routine, NativeDecompilationStage stage) {
         try {
-            return decomp.decompileMethod(routine, true, stage, null);
+            return decomp.decompileMethodEx(routine, null, stage);
         }
         catch(Exception e) {
             logger.catchingSilent(e);
             return null;
         }
-    }
-
-    INativeDecompilationTarget decompilePartial(INativeMethodItem routine) {
-        return decompile(routine, NativeDecompilationStage.LIFTING_COMPLETED);
     }
 }

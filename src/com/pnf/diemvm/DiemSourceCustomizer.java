@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
-import com.pnf.libravm.Libra.BinaryType;
+import com.pnf.diemvm.Diem.BinaryType;
 import com.pnfsoftware.jeb.core.units.INativeCodeUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.SourceCustomizerAdapter;
@@ -29,26 +29,26 @@ import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.ICNativeStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.items.INativeMethodItem;
 
 /**
- * Customize decompiled source code rendering to make it look more Move friendly.
+ * Customize decompiled source code rendering to make it look more {@code Move} friendly.
  *
  * @author Nicolas Falliere
  *
  */
-public class LibraSourceCustomizer extends SourceCustomizerAdapter {
-    LibraUnit libra;
-    INativeCodeUnit<LibraInstruction> code;
-    INativeDecompilerUnit<LibraInstruction> decomp;
+public class DiemSourceCustomizer extends SourceCustomizerAdapter {
+    DiemUnit unit;
+    INativeCodeUnit<DiemInstruction> code;
+    INativeDecompilerUnit<DiemInstruction> decomp;
 
     @SuppressWarnings("unchecked")
-    public LibraSourceCustomizer(INativeDecompilerUnit<LibraInstruction> decomp) {
+    public DiemSourceCustomizer(INativeDecompilerUnit<DiemInstruction> decomp) {
         this.decomp = decomp;
-        this.code = (INativeCodeUnit<LibraInstruction>)decomp.getParent();
-        this.libra = (LibraUnit)code.getParent();
+        this.code = (INativeCodeUnit<DiemInstruction>)decomp.getParent();
+        this.unit = (DiemUnit)code.getParent();
     }
 
     @Override
     public boolean generateClassDeclarationLine(ICClass elt, COutputSink out) {
-        if(libra.getBinaryType() == BinaryType.MODULE) {
+        if(unit.getBinaryType() == BinaryType.MODULE) {
             out.appendKeyword("module");
             out.space();
             elt.getClasstype().generate(out);
@@ -73,15 +73,15 @@ public class LibraSourceCustomizer extends SourceCustomizerAdapter {
     public boolean generateMethodDeclarationLine(ICMethod elt, COutputSink out) {
         int index = elt.getIndex();
         INativeMethodItem routine = code.getMethodByIndex(index);
-        FunctionDef f = libra.getFunctionByAddress(routine.getData().getMemoryAddress());
+        FunctionDef f = unit.getFunctionByAddress(routine.getData().getMemoryAddress());
         if(f.getFlags() != 0) {
-            out.appendKeyword(Libra.formatFunctionFlags(f.getFlags()));
+            out.appendKeyword(Diem.formatFunctionFlags(f.getFlags()));
             out.space();
         }
         // let the default generator generate the rest
         return false;
     }
-    
+
     @Override
     public boolean generateNativeStatement(ICNativeStatement elt, COutputSink out) {
         // TODO Auto-generated method stub

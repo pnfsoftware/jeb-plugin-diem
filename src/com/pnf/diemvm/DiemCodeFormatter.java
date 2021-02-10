@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import com.pnfsoftware.jeb.core.output.ItemClassIdentifiers;
 import com.pnfsoftware.jeb.core.output.code.CodeDocumentPart;
-import com.pnfsoftware.jeb.core.units.code.IInstruction;
 import com.pnfsoftware.jeb.core.units.code.IInstructionOperand;
 import com.pnfsoftware.jeb.core.units.code.asm.render.GenericCodeFormatter;
 import com.pnfsoftware.jeb.core.units.code.asm.render.NumberFormatter;
@@ -28,36 +27,36 @@ import com.pnfsoftware.jeb.util.format.Formatter;
 import com.pnfsoftware.jeb.util.serialization.annotations.Ser;
 
 /**
- * Custom formatting methods to render Libra disassembly.
+ * Custom formatting methods to render Diem disassembly.
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraCodeFormatter extends GenericCodeFormatter<LibraInstruction> {
+public class DiemCodeFormatter extends GenericCodeFormatter<DiemInstruction> {
 
-    public LibraCodeFormatter() {
+    public DiemCodeFormatter() {
         super();
         setMnemonicRightPaddingLength(0);
     }
 
     @Override
     public String generateExtraMethodComment(long address) {
-        LibraUnit libra = (LibraUnit)getCodeUnit().getParent();
-        FunctionDef f = libra.getFunctionByAddress(address);
+        DiemUnit unit = (DiemUnit)getCodeUnit().getParent();
+        FunctionDef f = unit.getFunctionByAddress(address);
         if(f == null) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Libra signature: %s / ", libra.formatObject(f.getHandle(libra).getSignature(libra))));
-        sb.append(String.format("Locals: %s", libra.formatObject(f.getCode().getLocals(libra))));
+        sb.append(String.format("Diem signature: %s / ", unit.formatObject(f.getHandle(unit).getSignature(unit))));
+        sb.append(String.format("Locals: %s", unit.formatObject(f.getCode().getLocals(unit))));
         return sb.toString();
     }
 
     /** Render the pre- and post- execution stack deltas before the instruction. */
     @Override
-    public void formatInstruction(long address, IInstruction insn, CodeDocumentPart out) {
-        LibraInstruction _insn = (LibraInstruction)insn;
+    public void formatInstruction(long address, DiemInstruction insn, CodeDocumentPart out) {
+        DiemInstruction _insn = (DiemInstruction)insn;
 
         // display operand stack information, before and after instruction execution
         String p = String.format("[%d,%d] ", _insn.preExecStackDelta, _insn.postExecStackDelta);
@@ -68,11 +67,11 @@ public class LibraCodeFormatter extends GenericCodeFormatter<LibraInstruction> {
     }
 
     @Override
-    public void formatOperand(long address, IInstruction insn, IInstructionOperand opnd, int opndIndexGlobal,
+    public void formatOperand(long address, DiemInstruction insn, IInstructionOperand opnd, int opndIndexGlobal,
             int opndDepth, CodeDocumentPart out) {
-        LibraUnit libra = (LibraUnit)(getCodeUnit().getParent());
-        LibraInstruction _insn = (LibraInstruction)insn;
-        LibraInstructionOperand _opnd = (LibraInstructionOperand)opnd;
+        DiemUnit unit = (DiemUnit)(getCodeUnit().getParent());
+        DiemInstruction _insn = (DiemInstruction)insn;
+        DiemInstructionOperand _opnd = (DiemInstructionOperand)opnd;
 
         Object o = _opnd.getObject();
         switch(_opnd.getOperandType()) {
@@ -94,29 +93,29 @@ public class LibraCodeFormatter extends GenericCodeFormatter<LibraInstruction> {
             break;
         case IdxAddress:
             //out.append("#" + _opnd.getObject());
-            out.append(libra.addressPool.get((int)o).toString());
+            out.append(unit.addressPool.get((int)o).toString());
             break;
         case IdxByteArray:
             //out.append("#" + _opnd.getObject());
-            out.append(libra.bytearrayPool.get((int)o).toString());
+            out.append(unit.bytearrayPool.get((int)o).toString());
             break;
         case IdxString:
             //out.append("#" + _opnd.getObject());
-            String str = libra.stringPool.get((int)o).toString();
+            String str = unit.stringPool.get((int)o).toString();
             out.appendAndRecord(Formatter.escapeString(str), ItemClassIdentifiers.STRING);
             break;
         case IdxFieldDef:
             //out.append("#" + _opnd.getObject());
-            out.append(libra.fieldDefs.get((int)o).getName(libra));
+            out.append(unit.fieldDefs.get((int)o).getName(unit));
             break;
         case IdxFuncHandle:
             //out.append("#" + _opnd.getObject());
-            //out.append(libra.formatObject(libra.functionHandles.get((int)o)));
-            out.append(libra.functionHandles.get((int)o).getName(libra));
+            //out.append(unit.formatObject(unit.functionHandles.get((int)o)));
+            out.append(unit.functionHandles.get((int)o).getName(unit));
             break;
         case IdxStructDef:
             //out.append("#" + _opnd.getObject());
-            out.append(libra.structDefs.get((int)o).getName(libra));
+            out.append(unit.structDefs.get((int)o).getName(unit));
             break;
         default:
             out.append(opnd.format(insn, address));

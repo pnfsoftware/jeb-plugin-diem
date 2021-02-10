@@ -16,41 +16,40 @@
  * limitations under the License.
  */
 
-package com.pnf.libravm;
+package com.pnf.diemvm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.pnf.libravm.Libra.OpcodeDef;
-import com.pnf.libravm.Libra.OpndType;
+import com.pnf.diemvm.Diem.OpcodeDef;
+import com.pnf.diemvm.Diem.OpndType;
 import com.pnfsoftware.jeb.core.units.INativeCodeUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.cfg.BasicBlock;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.AbstractConverter;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ConverterInstructionEntry;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IEGlobalContext;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IEPrototypeHandler;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IERoutineContext;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.exceptions.UnsupportedConversionException;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEAssign;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IECall;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEGeneric;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEImm;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEPrototypeHandler;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEReturn;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEUntranslatedInstruction;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEVar;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IWildcardType;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IWildcardTypeManager;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.OperationType;
-import com.pnfsoftware.jeb.core.units.code.asm.items.INativeItem;
+import com.pnfsoftware.jeb.core.units.code.asm.items.INativeFieldItem;
 import com.pnfsoftware.jeb.core.units.code.asm.items.INativeMethodItem;
 import com.pnfsoftware.jeb.core.units.code.asm.type.ICallingConvention;
 import com.pnfsoftware.jeb.core.units.code.asm.type.INativeType;
 import com.pnfsoftware.jeb.core.units.code.asm.type.IPrototypeItem;
 import com.pnfsoftware.jeb.core.units.code.asm.type.IReferenceType;
 import com.pnfsoftware.jeb.core.units.code.asm.type.ITypeManager;
-import com.pnfsoftware.jeb.core.units.code.asm.type.IWildcardType;
-import com.pnfsoftware.jeb.core.units.code.asm.type.IWildcardTypeManager;
 import com.pnfsoftware.jeb.util.base.Assert;
 import com.pnfsoftware.jeb.util.format.Formatter;
 import com.pnfsoftware.jeb.util.logging.GlobalLog;
@@ -60,15 +59,15 @@ import com.pnfsoftware.jeb.util.serialization.annotations.SerId;
 import com.pnfsoftware.jeb.util.serialization.annotations.SerTransient;
 
 /**
- * Libra bytecode to JEB IR converter. This class is the most important component of a decompiler
+ * Diem bytecode to JEB IR converter. This class is the most important component of a decompiler
  * plugin.
  *
  * @author Nicolas Falliere
  *
  */
 @Ser
-public class LibraConverter extends AbstractConverter<LibraInstruction> {
-    private static final ILogger logger = GlobalLog.getLogger(LibraConverter.class);
+public class DiemConverter extends AbstractConverter<DiemInstruction> {
+    private static final ILogger logger = GlobalLog.getLogger(DiemConverter.class);
 
     public static final int ID_PC = 0;
     public static final int ID_SP = 0x100;
@@ -85,9 +84,9 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     @SerId(3)
     IEGlobalContext _gCtx;
     @SerId(4)
-    LibraUnit libra;
+    DiemUnit unit;
     @SerId(5)
-    INativeCodeUnit<LibraInstruction> pbcu;
+    INativeCodeUnit<DiemInstruction> pbcu;
 
     // only valid during a routine conversion phase
     @SerTransient
@@ -115,9 +114,9 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     @SerTransient
     private int opndstackCounter = 0;
 
-    protected LibraConverter(LibraUnit libra, INativeCodeUnit<LibraInstruction> code) {
-        super(libra.getBytecodeParser(), LibraUnit.ptrsize);
-        this.libra = libra;
+    protected DiemConverter(DiemUnit unit, INativeCodeUnit<DiemInstruction> code) {
+        super(unit.getBytecodeParser(), DiemUnit.ptrsize);
+        this.unit = unit;
 
         if(code == null) {
             throw new IllegalArgumentException();
@@ -147,22 +146,22 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     protected void preRoutineConversion(INativeMethodItem routine, IERoutineContext ctx) {
         autoAssignFunctionPrototypes();
 
-        functionDef = libra.getFunctionByName(routine.getName(false));
-        functionHandle = functionDef.getHandle(libra);
+        functionDef = unit.getFunctionByName(routine.getName());
+        functionHandle = functionDef.getHandle(unit);
 
-        // create EVars for parameters and locals - note that in libra
-        // libra ABI: function parameters are placed into the first locals 0...N-1
+        // create EVars for parameters and locals
+        // diem ABI: function parameters are placed into the first locals 0...N-1
         // (implies that the first N locals must have the types of the N parameters)
-        LocalSignature locals = functionDef.getCode().getLocals(libra);
+        LocalSignature locals = functionDef.getCode().getLocals(unit);
         int index = 0;
         localSlotVars = new ArrayList<>();
         for(SignatureToken token: locals.getTokens()) {
-            IEVar slot = createVariable(PFX_LOCAL + index, getLibraTypeBitsize(token));
+            IEVar slot = createVariable(PFX_LOCAL + index, getDiemTypeBitsize(token));
             // note: quite unorthodox - traditionally IR types are provided to GENDEC in must later stages, way after the initial conversion phases
             // (and it is the case for ex. for special IEUntranslatedInstruction, whose types are appropriately provided by the decompiler extension)
             // GENDEC may discard some types during the initial conversion, lifting, and optimization phases
             // however, I'm doing this here to get even better decompilation results
-            slot.setType(ctx.getWildcardTypeManager().create(convertLibraType(token)));
+            slot.setType(ctx.getWildcardTypeManager().create(convertDiemType(token)));
             index++;
             localSlotVars.add(slot);
         }
@@ -184,14 +183,14 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     }
 
     @Override
-    protected void convertBlock(BasicBlock<LibraInstruction> b, List<IEStatement> interlist) {
+    protected void convertBlock(BasicBlock<DiemInstruction> b, List<IEStatement> interlist) {
         long base = b.getFirstAddress();
         long address = base;
         List<IEStatement> r = new ArrayList<>();
-        ConverterInstructionEntry<LibraInstruction> e = new ConverterInstructionEntry<>();
+        ConverterInstructionEntry<DiemInstruction> e = new ConverterInstructionEntry<>();
         e.r = r;  // will not change
 
-        LibraInstruction insn = null;
+        DiemInstruction insn = null;
         try {
             int i = 0;
             while(i < b.size()) {
@@ -234,7 +233,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 case MOVE_LOC: {
                     int idx = insn.getOperandAsIndex();
                     IEVar var = getLocalSlot(idx);
-                    SignatureToken sig = functionDef.getCode().getLocals(libra).getTokens().get(idx);
+                    SignatureToken sig = functionDef.getCode().getLocals(unit).getTokens().get(idx);
                     pushAssign(e, sig, var);
                     if(opcode == OpcodeDef.MOVE_LOC) {
                         // TODO: limited translation for move: we make the location invalid by zero'ing it (although zero is not invalid per-say)
@@ -311,7 +310,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case RET: {
                     IEReturn ret;
-                    List<SignatureToken> returnTokens = functionHandle.getSignature(libra).getReturnTokens();
+                    List<SignatureToken> returnTokens = functionHandle.getSignature(unit).getReturnTokens();
                     if(returnTokens.isEmpty()) {
                         ret = ctx.createReturn();
                     }
@@ -335,19 +334,19 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case CALL: {
                     int idx = insn.getOperandAsIndex();
-                    FunctionHandle f = libra.functionHandles.get(idx);
-                    String fname = f.getName(libra);
-                    FunctionSignature fsig = f.getSignature(libra);
+                    FunctionHandle f = unit.functionHandles.get(idx);
+                    String fname = f.getName(unit);
+                    FunctionSignature fsig = f.getSignature(unit);
 
-                    INativeMethodItem targetRoutine = pbcu.getInternalMethod(f.mappedAddress, true);
+                    INativeMethodItem targetRoutine = getNativeContext().getRoutine(f.mappedAddress);
                     if(targetRoutine == null) {
-                        targetRoutine = pbcu.getMethod(fname);
+                        targetRoutine = getNativeContext().getRoutineByName(fname);
                         if(targetRoutine == null) {
                             throw new UnsupportedConversionException("Cannot resolve routine");
                         }
                     }
 
-                    IPrototypeItem proto = convertLibraPrototype(fsig);
+                    IPrototypeItem proto = convertDiemPrototype(fsig);
                     if(targetRoutine.getPrototype() == null) {
                         targetRoutine.setPrototype(proto);
                     }
@@ -363,32 +362,32 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                         _returnExp.add(push(token));
                     }
 
-                    IEGeneric callSite = ctx.createGlobalSymbol(targetRoutine);
+                    IEVar callSite = ctx.createSymbolForRoutine(targetRoutine);
 
-                    IECall call = ctx.createCall(callSite, null, _returnExp, _paramExp, 0, null);
+                    IECall call = ctx.createCall(callSite, null, _returnExp, _paramExp, 0, null, null);
                     e.r.add(call);
                     break;
                 }
                 case LD_ADDR: {
                     int idx = insn.getOperandAsIndex();
-                    byte[] bytes = libra.addressPool.get(idx).getBytes();
+                    byte[] bytes = unit.addressPool.get(idx).getBytes();
                     IEImm addr = ctx.createImm(bytes, 256);
                     pushAssign(e, SignatureToken.stAddress, addr);
                     break;
                 }
                 case LD_BYTEARRAY: {
                     int idx = insn.getOperandAsIndex();
-                    long addr = libra.bytearrayPool.get(idx).mappedAddress;
-                    INativeItem item = pbcu.getNativeItemAt(addr);
-                    IEVar symbol = ctx.createGlobalSymbol(item);
+                    long addr = unit.bytearrayPool.get(idx).mappedAddress;
+                    INativeFieldItem item = getNativeContext().getField(addr);
+                    IEVar symbol = ctx.createSymbolForField(item);
                     pushAssign(e, SignatureToken.stBytearray, symbol);
                     break;
                 }
                 case LD_STR: {
                     int idx = insn.getOperandAsIndex();
-                    long addr = libra.stringPool.get(idx).mappedAddress;
-                    INativeItem item = pbcu.getNativeItemAt(addr);
-                    IEVar symbol = ctx.createGlobalSymbol(item);
+                    long addr = unit.stringPool.get(idx).mappedAddress;
+                    INativeFieldItem item = getNativeContext().getField(addr);
+                    IEVar symbol = ctx.createSymbolForField(item);
                     pushAssign(e, SignatureToken.stString, symbol);
                     break;
                 }
@@ -398,7 +397,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
 
                 case BORROW_REF: {  //=BorrowGlobal
                     int idx = insn.getOperandAsIndex();
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
 
                     IEVar arg_addr = pop();
 
@@ -417,16 +416,16 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case LD_REF_FIELD: {  // =BorrowField
                     int idx = insn.getOperandAsIndex();
-                    FieldDef field = libra.fieldDefs.get(idx);
+                    FieldDef field = unit.fieldDefs.get(idx);
 
                     IEVar arg_ref = pop();
 
-                    SignatureToken token = field.getSignature(libra).getToken();
+                    SignatureToken token = field.getSignature(unit).getToken();
                     token = new SignatureToken(token, true);
 
-                    long fieldNameAddr = libra.stringPool.get(field.name_index).mappedAddress;
-                    INativeItem fieldNameItem = pbcu.getNativeItemAt(fieldNameAddr);
-                    IEVar arg_fieldname = ctx.createGlobalSymbol(fieldNameItem);
+                    long fieldNameAddr = unit.stringPool.get(field.name_index).mappedAddress;
+                    INativeFieldItem fieldNameItem = getNativeContext().getField(fieldNameAddr);
+                    IEVar arg_fieldname = ctx.createSymbolForField(fieldNameItem);
 
                     IEVar res = push(token);
 
@@ -458,7 +457,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case PACK: {
                     int idx = insn.getOperandAsIndex();
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
                     int popcnt = sd.getFieldCount();
                     IEGeneric[] opnds = new IEGeneric[popcnt];
                     for(int opndindex = 0; opndindex < popcnt; opndindex++) {
@@ -474,17 +473,17 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case UNPACK: {
                     int idx = insn.getOperandAsIndex();
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
                     IEVar instance = pop();
 
                     int pushcnt = sd.getFieldCount();
                     List<IEGeneric> retvals = new ArrayList<>(pushcnt);
                     for(int fi = 0; fi < pushcnt; fi++) {
-                        retvals.add(push(sd.getFields(libra).get(fi).getSignature(libra).getToken()));
+                        retvals.add(push(sd.getFields(unit).get(fi).getSignature(unit).getToken()));
                     }
 
                     IEUntranslatedInstruction ir = createUntranslated(ctx, address, insn, null, instance);
-                    ir.setResultExpressions(retvals);
+                    ir.setReturnExpressions(retvals);
                     e.r.add(ir);
 
                     break;
@@ -492,7 +491,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 case MOVE_TO: {  //=MoveToSender
                     int idx = insn.getOperandAsIndex();
                     @SuppressWarnings("unused")  // TODO: provide struct info
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
                     IEVar arg_addr = pop();
                     //createVariable("pseudoVar", 64);
                     e.r.add(createUntranslated(ctx, address, insn, null, arg_addr));
@@ -501,7 +500,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 case MOVE_FROM: {
                     int idx = insn.getOperandAsIndex();
                     @SuppressWarnings("unused")  // TODO: provide struct info
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
                     IEVar arg_addr = pop();
                     //createVariable("pseudoVar", 64);
                     e.r.add(createUntranslated(ctx, address, insn, null, arg_addr));
@@ -510,7 +509,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 case EXISTS: {
                     int idx = insn.getOperandAsIndex();
                     @SuppressWarnings("unused")  // TODO: provide struct info
-                    StructDef sd = libra.structDefs.get(idx);
+                    StructDef sd = unit.structDefs.get(idx);
                     IEVar arg_addr = pop();
                     IEVar res = push(SignatureToken.stBool);
                     e.r.add(createUntranslated(ctx, address, insn, res, arg_addr));
@@ -518,7 +517,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 }
                 case LD_REF_LOC: {
                     int idx = insn.getOperandAsIndex();
-                    SignatureToken token = functionDef.getCode().getLocals(libra).getTokens().get(idx);
+                    SignatureToken token = functionDef.getCode().getLocals(unit).getTokens().get(idx);
                     token = new SignatureToken(token, false);
                     IEVar local = getLocalSlot(idx);
                     IEVar res = push(token);
@@ -542,7 +541,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
 
                     IEGeneric[] opnds = new IEGeneric[popcnt];
                     for(int opndindex = 0; opndindex < popcnt; opndindex++) {
-                        opnds[popcnt - 1 - opndindex] = pop();  // libra convention, arguments are pushed from 1st to last, so we're pop'ing teh last first
+                        opnds[popcnt - 1 - opndindex] = pop();  // diem convention, arguments are pushed from 1st to last, so we're pop'ing teh last first
                     }
                     IEGeneric res = null;
 
@@ -646,7 +645,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
         return localSlotVars.get(index);
     }
 
-    void pushAssign(ConverterInstructionEntry<LibraInstruction> e, SignatureToken st, IEGeneric expression) {
+    void pushAssign(ConverterInstructionEntry<DiemInstruction> e, SignatureToken st, IEGeneric expression) {
         IEVar stkvar;
         if(st == null) {
             stkvar = pushForce(expression.getBitsize());
@@ -693,7 +692,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     IEVar push(SignatureToken st) {
         Assert.a(st != null);
 
-        INativeType nativeType = convertLibraType(st);
+        INativeType nativeType = convertDiemType(st);
         IWildcardType type = ctx.getWildcardTypeManager().create(nativeType);
 
         IEVar stkvar;
@@ -703,14 +702,14 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
                 stkvar = slot.var;
             }
             else {
-                stkvar = createVariable(PFX_STACK + opndstackCounter, type.getBitsize()/*getLibraTypeBitsize(st)*/);
+                stkvar = createVariable(PFX_STACK + opndstackCounter, type.getBitsize()/*getDiemTypeBitsize(st)*/);
                 stkvar.setType(type);
                 opndstack.set(opndstackIndex, new StackSlot(stkvar, st));
                 opndstackCounter++;
             }
         }
         else {
-            stkvar = createVariable(PFX_STACK + opndstackCounter, type.getBitsize()/*getLibraTypeBitsize(st)*/);
+            stkvar = createVariable(PFX_STACK + opndstackCounter, type.getBitsize()/*getDiemTypeBitsize(st)*/);
             stkvar.setType(type);
             opndstack.add(new StackSlot(stkvar, st));
             opndstackCounter++;
@@ -733,7 +732,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     @Override
     public int insertReturns(IERoutineContext _ctx) {
         // we bypass the IEReturn insertion phase: the IEReturn statements were inserted when converting the RET opcode
-        // (this stage would fail anyway since we do not have a proper calling convention for libra binaries)
+        // (this stage would fail anyway since we do not have a proper calling convention for diem binaries)
         return 0;
     }
 
@@ -746,36 +745,36 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     IPrototypeItem autoAssignFunctionPrototype(INativeMethodItem routine, boolean force) {
         IPrototypeItem proto = routine.getPrototype();
         if(proto == null || force) {
-            FunctionHandle f = libra.getFunctionHandleByName(routine.getName(false));
-            proto = convertLibraPrototype(f.getSignature(libra));
+            FunctionHandle f = unit.getFunctionHandleByName(routine.getName(false));
+            proto = convertDiemPrototype(f.getSignature(unit));
             routine.setPrototype(proto);
         }
         return proto;
     }
 
-    IPrototypeItem convertLibraPrototype(FunctionSignature fsig) {
+    IPrototypeItem convertDiemPrototype(FunctionSignature fsig) {
         // retrieve the default calling convention determined by the code analyzer plugin - it should be UNKNOWN (any)
         ICallingConvention cc = pbcu.getTypeManager().getCallingConventionManager().getDefaultConvention();
 
         List<INativeType> nativeParameterTypes = new ArrayList<>();
         for(SignatureToken token: fsig.getParamTokens()) {
-            INativeType t = convertLibraType(token);
+            INativeType t = convertDiemType(token);
             nativeParameterTypes.add(t);
         }
 
         List<INativeType> nativeReturnTypes = new ArrayList<>();
         for(SignatureToken token: fsig.getReturnTokens()) {
-            INativeType t = convertLibraType(token);
+            INativeType t = convertDiemType(token);
             nativeReturnTypes.add(t);
         }
 
         if(fsig.getReturnTokens().size() >= 2) {
-            logger.debug("take not: method has 2+ return values: %s", libra.formatObject(fsig));
+            logger.debug("take not: method has 2+ return values: %s", unit.formatObject(fsig));
         }
         return pbcu.getTypeManager().createPrototypeEx(cc, nativeReturnTypes, nativeParameterTypes, null);
     }
 
-    int getLibraTypeBitsize(SignatureToken st) {
+    int getDiemTypeBitsize(SignatureToken st) {
         switch(st.getSerializedType()) {
         case BOOL:
             return 64;  // make it a regular uint64
@@ -798,7 +797,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
         }
     }
 
-    INativeType convertLibraType(SignatureToken token) {
+    INativeType convertDiemType(SignatureToken token) {
         ITypeManager typeman = pbcu.getTypeManager();
         //IPrimitiveTypeManager pman = typeman.getPrimitives();
 
@@ -815,8 +814,8 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
         case STRING:
             return typeman.getType("string");
         case STRUCT:
-            StructHandle sh = token.getStructureHandle(libra);
-            String sname = sh.getFullName(libra).replace('@', '_').replace('.', '_');
+            StructHandle sh = token.getStructureHandle(unit);
+            String sname = sh.getFullName(unit).replace('@', '_').replace('.', '_');
             INativeType stype = typeman.getType(sname);
             if(stype == null) {
                 stype = typeman.createStructure(sname);
@@ -828,7 +827,7 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
             if(token0 == null) {
                 return typeman.getVoidReference();
             }
-            INativeType t = convertLibraType(token0);
+            INativeType t = convertDiemType(token0);
             return typeman.createReference(t);
         default:
             throw new RuntimeException("TBI: type conversion: " + token);
@@ -838,10 +837,10 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     List<IEVar> getIRParameterVariables(IERoutineContext ctx, FunctionHandle fh) {
         IWildcardTypeManager etypeman = ctx.getWildcardTypeManager();
         List<IEVar> r = new ArrayList<>();
-        List<SignatureToken> tokens = fh.getSignature(libra).getParamTokens();
+        List<SignatureToken> tokens = fh.getSignature(unit).getParamTokens();
         for(int index = 0; index < tokens.size(); index++) {
             IEVar var = ctx.getVariableByName(PFX_PARAM + index);
-            var.setType(etypeman.create(convertLibraType(tokens.get(index))));
+            var.setType(etypeman.create(convertDiemType(tokens.get(index))));
             r.add(var);
         }
         return r;
@@ -850,8 +849,8 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
     List<IWildcardType> getIRReturnTypes(IERoutineContext ctx, FunctionHandle fh) {
         IWildcardTypeManager etypeman = ctx.getWildcardTypeManager();
         List<IWildcardType> r = new ArrayList<>();
-        for(SignatureToken token: fh.getSignature(libra).getReturnTokens()) {
-            r.add(etypeman.create(convertLibraType(token)));
+        for(SignatureToken token: fh.getSignature(unit).getReturnTokens()) {
+            r.add(etypeman.create(convertDiemType(token)));
         }
         return r;
     }
@@ -869,29 +868,30 @@ public class LibraConverter extends AbstractConverter<LibraInstruction> {
         }
 
         @Override
-        public void applyTypesToVars() {
-            // pass
+        public boolean applyKnownPrototype(boolean createCopies) {
+            return true;
         }
 
         @Override
-        public void retrieveTypesAndVars(List<IEVar> params, List<IWildcardType> rettypes) {
-            FunctionHandle fh = libra.getFunctionHandleByName(ctx.getRoutine().getName(false));
+        public boolean retrieveFromPrototype(List<IEGeneric> params, List<IWildcardType> rettypes) {
+            FunctionHandle fh = unit.getFunctionHandleByName(ctx.getRoutine().getName());
             params.addAll(getIRParameterVariables(ctx, fh));
             rettypes.addAll(getIRReturnTypes(ctx, fh));
+            return true;
         }
 
         @Override
-        public int refineWildcardPrototype() {
+        public int refinePrototype() {
             return 0;  // pass
         }
     }
 
-    IEUntranslatedInstruction createUntranslated(IERoutineContext ctx, long nativeAddress, LibraInstruction insn,
+    IEUntranslatedInstruction createUntranslated(IERoutineContext ctx, long nativeAddress, DiemInstruction insn,
             IEGeneric irResult, IEGeneric... irOperands) {
         String mn = insn.getOpcode().getHLMnemonic();
         IEUntranslatedInstruction _1 = ctx.createUntranslatedInstruction(nativeAddress, mn, irOperands);
         _1.setTag(insn.getOpcode().getOpcode());
-        _1.setResultExpression(irResult);
+        _1.setReturnExpression(irResult);
         return _1;
     }
 }
