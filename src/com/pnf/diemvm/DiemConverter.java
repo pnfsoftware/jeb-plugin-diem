@@ -143,7 +143,7 @@ public class DiemConverter extends AbstractConverter<DiemInstruction> {
     }
 
     @Override
-    protected void preRoutineConversion(INativeMethodItem routine, IERoutineContext ctx) {
+    protected void preRoutineConversion(INativeMethodItem routine, IERoutineContext ctx, List<IEStatement> irlist) {
         autoAssignFunctionPrototypes();
 
         functionDef = unit.getFunctionByName(routine.getName());

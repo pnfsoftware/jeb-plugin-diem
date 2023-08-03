@@ -2,8 +2,6 @@
 
 This set of plugins provide [Diem](https://github.com/diem/diem/) (formerly named Libra) decompilation (diemvm/Move) support for JEB Decompiler.
 
-Required version: JEB 3.6-beta [(download)](https://www.pnfsoftware.com/dl?jebdemo)
-
 ## Usage
 - Open a compiled Diem module or script in JEB (they start with the <code>diemvm</code> magic bytes)
 - JEB will start the analysis and behind-the-scene decompilation to restore the module

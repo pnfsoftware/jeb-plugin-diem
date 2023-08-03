@@ -39,6 +39,7 @@ import com.pnfsoftware.jeb.core.units.code.asm.memory.MemoryException;
 import com.pnfsoftware.jeb.core.units.code.asm.processor.ProcessorException;
 import com.pnfsoftware.jeb.core.units.codeobject.AbstractCodeObjectUnit;
 import com.pnfsoftware.jeb.core.units.codeobject.CodeObjectUnitUtil;
+import com.pnfsoftware.jeb.core.units.codeobject.ILinkInfoProvider;
 import com.pnfsoftware.jeb.core.units.codeobject.ILoaderInformation;
 import com.pnfsoftware.jeb.core.units.codeobject.ISegmentInformation;
 import com.pnfsoftware.jeb.core.units.codeobject.ISymbolInformation;
@@ -525,7 +526,7 @@ public class DiemUnit extends AbstractCodeObjectUnit {
     }
 
     @Override
-    protected boolean applyRelocations(IVirtualMemory mem, long base) {
+    protected boolean applyRelocations(IVirtualMemory mem, long base, ILinkInfoProvider linkInfoPrv) {
         // no relocation
         return false;
     }

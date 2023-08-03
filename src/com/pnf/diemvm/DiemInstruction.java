@@ -135,7 +135,7 @@ public class DiemInstruction implements IInstruction {
     }
 
     @Override
-    public IFlowInformation getIndirectRoutineCall(long instructionAddress) {
+    public IFlowInformation collectIndirectCallReferences(long instructionAddress) {
         return FlowInformation.NONE;
     }
 
