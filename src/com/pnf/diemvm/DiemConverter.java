@@ -578,9 +578,9 @@ public class DiemConverter extends AbstractConverter<DiemInstruction> {
                 //@formatter:on
 
                 // note: "size" of an IR statement is set to 1 here (therefore, first address is: 0, second: 1, etc)
-                ctx.registerConvertedAddressRange(address, irAddress, irAddress + r.size());
                 for(IEStatement stm: r) {
                     logger.i("0x%X -> %s", address, stm);
+                    stm.setLowerLevelAddress(address);
                     interlist.add(stm);
                 }
 
@@ -881,8 +881,8 @@ public class DiemConverter extends AbstractConverter<DiemInstruction> {
         }
 
         @Override
-        public int refinePrototype() {
-            return 0;  // pass
+        public boolean refinePrototype() {
+            return false;  // pass
         }
     }
 
