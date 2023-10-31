@@ -23,7 +23,7 @@ import com.pnfsoftware.jeb.core.units.code.asm.ChainedOperationResult;
 import com.pnfsoftware.jeb.core.units.code.asm.cfg.CFG;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.AbstractNativeDecompilerExtension;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IDecompiledMethod;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.IDecompilerManager;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerContext;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IEUntranslatedInstruction;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.IWildcardType;
@@ -40,7 +40,7 @@ import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ir.opt.IEOptFilterCanD
 public class DiemDecompilerExtension extends AbstractNativeDecompilerExtension {
 
     @Override
-    public ChainedOperationResult<Boolean> customizeIntermediateOptimizer(IDecompilerManager decompiler,
+    public ChainedOperationResult<Boolean> customizeIntermediateOptimizer(INativeDecompilerContext decompiler,
             IEMasterOptimizer mo) {
         mo.addDisregardedOutputFilter(new IEOptFilterCanDiscard() {
             @Override

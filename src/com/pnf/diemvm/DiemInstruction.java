@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.pnf.diemvm.Diem.OpcodeDef;
-import com.pnfsoftware.jeb.core.units.code.EntryPointDescription;
+import com.pnfsoftware.jeb.core.units.code.CodePointer;
 import com.pnfsoftware.jeb.core.units.code.FlowInformation;
 import com.pnfsoftware.jeb.core.units.code.IFlowInformation;
 import com.pnfsoftware.jeb.core.units.code.IInstruction;
@@ -115,10 +115,10 @@ public class DiemInstruction implements IInstruction {
             FlowInformation f = new FlowInformation();
             // (optional) fallthrough
             if(opdef == OpcodeDef.BR_TRUE || opdef == OpcodeDef.BR_FALSE) {
-                f.addTarget(new EntryPointDescription(instructionAddress + getSize()));
+                f.addTarget(new CodePointer(instructionAddress + getSize()));
             }
             // calculate the target as if it were an address, thanks to the target-delta previously stored by the bc parser
-            f.addTarget(new EntryPointDescription(instructionAddress + targetDelta));
+            f.addTarget(new CodePointer(instructionAddress + targetDelta));
             return f;
         }
         return FlowInformation.NONE;

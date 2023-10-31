@@ -24,8 +24,8 @@ import com.pnfsoftware.jeb.core.units.code.asm.decompiler.INativeDecompilerUnit;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.SourceCustomizerAdapter;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.COutputSink;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.ICClass;
+import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.ICCustomStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.ICMethod;
-import com.pnfsoftware.jeb.core.units.code.asm.decompiler.ast.ICNativeStatement;
 import com.pnfsoftware.jeb.core.units.code.asm.items.INativeMethodItem;
 
 /**
@@ -83,7 +83,7 @@ public class DiemSourceCustomizer extends SourceCustomizerAdapter {
     }
 
     @Override
-    public boolean generateNativeStatement(ICNativeStatement elt, COutputSink out) {
+    public boolean generateNativeStatement(ICCustomStatement elt, COutputSink out) {
         // TODO Auto-generated method stub
         return super.generateNativeStatement(elt, out);
     }

@@ -43,7 +43,7 @@ public class DiemIdentifier extends AbstractUnitIdentifier {
     private static final ILogger logger = GlobalLog.getLogger(DiemIdentifier.class);
 
     public static final String TYPE = "diemvm";
-    public static final Version VERSION = Version.create(0, 4, 1);
+    public static final Version VERSION = Version.create(0, 4, 2);
 
     public DiemIdentifier() {
         super(TYPE, 0);
