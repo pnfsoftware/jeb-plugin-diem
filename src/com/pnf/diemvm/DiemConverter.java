@@ -805,7 +805,6 @@ public class DiemConverter extends AbstractConverter<DiemInstruction> {
         case BOOL:
             return typeman.getType("bool");
         case INTEGER:
-            //return pman.getExactIntegerBySize(8, false);
             return typeman.getType("u64");
         case ADDRESS:
             return typeman.getType("address");
